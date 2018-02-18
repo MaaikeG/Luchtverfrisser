@@ -13,6 +13,7 @@ enum State {
 };
 
 uint8_t state = notInUse;
+bool stateChanged;
 
 // notInUse variables
 int brightness = 0;
@@ -30,6 +31,14 @@ void setup() {
 
 void loop() {
   int buttonState = digitalRead(overridePin);
+  if(buttonState == LOW && !stateChanged){
+    stateChanged = true;
+    state++;
+    // reset if we exceed the number of implemented states
+    if(state > 0)
+      state = 0;
+  }else if(buttonState == HIGH)
+    stateChanged = false;
   
   switch(state){
     case notInUse:
