@@ -2,6 +2,12 @@ const uint8_t redPin = 9, greenPin = 10, bluePin = 11,
               freshenerPin = 12,
               overridePin = 14; //A1 as digital
 
+const uint8_t debounceDelay = 50;
+// this might go wrong if multiple buttons are pressed at the same time
+// , but having only one of these saves memory.
+unsigned long lastDebounceTime;
+int lastButtonState;
+
 enum State {
   notInUse,
   useUnknown,
@@ -30,7 +36,7 @@ void setup() {
 }
 
 void loop() {
-  int buttonState = digitalRead(overridePin);
+  int buttonState = debouncedDigitalRead(overridePin);
   if(buttonState == LOW && !stateChanged){
     stateChanged = true;
     state++;
@@ -65,5 +71,29 @@ void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()){
     previousUpdateMillis = millis();
     (*f)();
   }
+}
+
+bool debouncedDigitalRead(int buttonPin){
+  int buttonState = HIGH;
+  int reading = digitalRead(buttonPin);
+  
+  if (reading != lastButtonState) {
+    // reset the debouncing timer
+    lastDebounceTime = millis();
+  }
+
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    // whatever the reading is at, it's been there for longer than the debounce
+    // delay, so take it as the actual current state:
+
+    // if the button state has changed:
+    if (reading != buttonState) {
+      buttonState = reading;
+    }
+  }
+
+  // save the reading. Next time through the loop, it'll be the lastButtonState:
+  lastButtonState = reading;
+  return buttonState;
 }
 
