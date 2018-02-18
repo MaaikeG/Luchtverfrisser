@@ -35,7 +35,7 @@ void loop() {
     stateChanged = true;
     state++;
     // reset if we exceed the number of implemented states
-    if(state > 0)
+    if(state >= 2)
       state = 0;
   }else if(buttonState == HIGH)
     stateChanged = false;
@@ -49,6 +49,13 @@ void loop() {
         if (brightness <= 0 || brightness >= 255)
           fadeAmount = -fadeAmount;
       });
+
+      // todo: state transition logic and resetting all the 
+      // hardware we used (e.g. turn the led off)
+      break;
+    case useUnknown:
+      if(stateChanged)
+        digitalWrite(greenPin, HIGH);
       break;
   }
 }
