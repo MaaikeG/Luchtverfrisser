@@ -1,5 +1,4 @@
-const uint8_t freshenerPin = 12,
-              overridePin = 14; //A1 as digital
+const uint8_t freshenerPin = 12; //A1 as digital
 
 const uint8_t debounceDelay = 50;
 // this might go wrong if multiple buttons are pressed at the same time
@@ -28,36 +27,39 @@ void setup() {
   setupLEDs();
   setupLCD();
   setupSensors();
+  setupButtons();
   pinMode(freshenerPin, OUTPUT);
-  pinMode(overridePin, INPUT);
 }
 
 void loop() {
   printLcd();
   setLedColor();
-  
-  int buttonState = debouncedDigitalRead(overridePin);
-  if(buttonState == LOW && !stateChanged){
-    stateChanged = true;
-    state++;
-    // reset if we exceed the number of implemented states
-    if(state >= 2)
-      state = 0;
-  } else if(buttonState == HIGH)
-    stateChanged = false;
+  switch (state) {
+    case menu:
+      checkButtons();
+  }
+//  int buttonState = debouncedDigitalRead(overridePin);
+//  if (buttonState == LOW && !stateChanged) {
+//    stateChanged = true;
+//    state++;
+//    // reset if we exceed the number of implemented states
+//    if (state >= 2)
+//      state = 0;
+//  } else if (buttonState == HIGH)
+//    stateChanged = false;
 }
 
-void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()){
-  if(millis() - *lastRunMillis >= frequency){
+void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()) {
+  if (millis() - *lastRunMillis >= frequency) {
     previousUpdateMillis = millis();
     (*f)();
   }
 }
 
-bool debouncedDigitalRead(int buttonPin){
+bool debouncedDigitalRead(int buttonPin) {
   int buttonState = HIGH;
   int reading = digitalRead(buttonPin);
-  
+
   if (reading != lastButtonState) {
     // reset the debouncing timer
     lastDebounceTime = millis();
