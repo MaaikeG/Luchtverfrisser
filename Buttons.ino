@@ -23,9 +23,10 @@ void doManualOverride() {
 }
 
 void enterMenu() {
-  detachInterrupt(buttonScroll);
+  detachInterrupt(digitalPinToInterrupt(buttonScroll));
   state = menu;
   menuState = sprayDelay;
+  menuStateChanged = true;
 }
 
 void checkButtons() {
@@ -33,9 +34,12 @@ void checkButtons() {
   if (scrollButtonState == LOW && !menuStateChanged) {
     menuStateChanged = true;
     menuState++;
-    if (state >= 2)
-      state = 0;
-  } else if (scrollButtonState == HIGH)
+    Serial.println(menuState);
+    if (menuState > 2) {
+      menuState = 0;
+    }
+  } 
+  if (scrollButtonState == HIGH)
     menuStateChanged = false;
 }
 

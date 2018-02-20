@@ -16,10 +16,10 @@ void printLcd() {
     lcd.setCursor(0,0);
     switch (menuState){
       case sprayDelay:
-        lcd.print("Spray delay: XXX");
+        lcd.print("Spray delay:");
       break;
       case spraysRemaining:
-        lcd.print("Sprays left: XXX");
+        lcd.print("Sprays left:");
       break;
       case exitMenu:
         lcd.print("Exit");
