@@ -8,30 +8,51 @@ void setupLCD() {
 }
 
 void printLcd() {  
-  if(state == triggered) {
+  switch (state) {
+    case triggered:
       lcd.setCursor(0,0);
       lcd.print("triggered!");
-  }
-  else if (state == menu) {
-    lcd.setCursor(0,0);
-    switch (menuState){
-      case sprayDelay:
-        lcd.print("Spray delay:");
-      break;
-      case spraysRemaining:
-        lcd.print("Sprays left:");
-      break;
-      case exitMenu:
-        lcd.print("Exit");
-      break;
+    break;
+    case menu: 
+      lcd.setCursor(0,0);
+      switch (menuState){
+        case sprayDelayMenu:
+          if(isInSubMenu) {
+            lcd.print(sprayDelay / 1000);
+            lcd.setCursor(0,1);
+            lcd.print("save       >");
+          }
+          else {
+            lcd.print("Spray delay:");
+            lcd.setCursor(0,1);
+            lcd.print(sprayDelay / 1000);
+          }
+        break;
+        case spraysRemainingMenu:
+           if(isInSubMenu) {
+            lcd.print("Reset sprays left?");
+            lcd.setCursor(0,1);
+            lcd.print("<no     yes>");
+            }
+           else {
+            lcd.print("Sprays left:");
+            lcd.setCursor(0,1);
+            lcd.print(spraysRemaining);
+           }
+        break;
+        case exitMenu:
+          lcd.print("Exit");
+        break;
       }
-      lcd.setCursor(0,1);
-      lcd.print(">");
-    }
-   else {
-      lcd.setCursor(0, 1);
-      lcd.print("Temp: " + getTemperatureString());
+      break;
+      default:
+        lcd.setCursor(0, 1);
+        lcd.print("Temp: " + getTemperatureString());
+      break;
    }
 }
 
+void clearLCD() {
+  lcd.clear();
+}
 

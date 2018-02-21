@@ -1,10 +1,16 @@
 const uint8_t freshenerPin = 12; //A1 as digital
 
 const uint8_t debounceDelay = 50;
-// this might go wrong if multiple buttons are pressed at the same time
-// , but having only one of these saves memory.
+
 unsigned long lastDebounceTime;
-int lastButtonState;
+int lastButtonStates;
+int currentButtonStates; // contains current and last states of each button. 
+// The bit on the position that is also the index of the button contains 
+// the last state for that button.
+
+// TODO: Save these is EEPROM!!!
+int sprayDelay = 15000; // delay in ms
+uint8_t spraysRemaining = 2400;
 
 enum State {
   notInUse,
@@ -38,15 +44,6 @@ void loop() {
     case menu:
       checkButtons();
   }
-//  int buttonState = debouncedDigitalRead(overridePin);
-//  if (buttonState == LOW && !stateChanged) {
-//    stateChanged = true;
-//    state++;
-//    // reset if we exceed the number of implemented states
-//    if (state >= 2)
-//      state = 0;
-//  } else if (buttonState == HIGH)
-//    stateChanged = false;
 }
 
 void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()) {
@@ -57,10 +54,12 @@ void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()) {
 }
 
 bool debouncedDigitalRead(int buttonPin) {
-  int buttonState = HIGH;
+  uint8_t bitPosition = buttonPin/2;
+  int currentState = (currentButtonStates & (1 << bitPosition)) > 0;
+  int lastState = (lastButtonStates & (1 << bitPosition)) > 0;
   int reading = digitalRead(buttonPin);
 
-  if (reading != lastButtonState) {
+  if (reading != lastState) {
     // reset the debouncing timer
     lastDebounceTime = millis();
   }
@@ -68,14 +67,16 @@ bool debouncedDigitalRead(int buttonPin) {
   if ((millis() - lastDebounceTime) > debounceDelay) {
     // whatever the reading is at, it's been there for longer than the debounce
     // delay, so take it as the actual current state:
-
-    // if the button state has changed:
-    if (reading != buttonState) {
-      buttonState = reading;
-    }
+     if (reading != currentState) {
+      currentState = reading;
+      currentButtonStates ^= (-reading ^ currentButtonStates) & (1UL << bitPosition);  
+     }
   }
-
-  // save the reading. Next time through the loop, it'll be the lastButtonState:
-  lastButtonState = reading;
-  return buttonState;
+  // save reading for next time in the loop.
+  lastButtonStates ^= (-reading ^ lastButtonStates) & (1UL << bitPosition);
+  
+  return currentState; 
 }
+
+
+
