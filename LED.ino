@@ -9,22 +9,22 @@ void setupLEDs() {
 }
 
 void setLedColor() {
-    switch(state){
+  switch (state) {
     case notInUse:
-      clockWatch(30, &previousUpdateMillis, [](){
+      clockWatch(30, &previousUpdateMillis, []() {
         brightness = brightness + fadeAmount;
         analogWrite(green, brightness);
-        
+
         if (brightness <= 0 || brightness >= 255)
           fadeAmount = -fadeAmount;
       });
 
-      // todo: state transition logic and resetting all the 
+      // todo: state transition logic and resetting all the
       // hardware we used (e.g. turn the led off)
       break;
     case useUnknown:
-      if(stateChanged)
+      if (stateChanged)
         digitalWrite(green, HIGH);
       break;
-    }
+  }
 }

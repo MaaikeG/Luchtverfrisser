@@ -7,57 +7,57 @@ void setupLCD() {
   lcd.begin(16, 2);
 }
 
-void printLcd() {  
+void printLcd() {
   switch (state) {
     case triggered:
-      lcd.setCursor(0,0);
+      lcd.setCursor(0, 0);
       lcd.print(F("triggered!"));
-    break;
-    case menu: 
-      lcd.setCursor(0,0);
-      switch (menuState){
+      break;
+    case menu:
+      lcd.setCursor(0, 0);
+      switch (menuState) {
         case sprayDelayMenu:
-          if(isInSubMenu) {
+          if (isInSubMenu) {
             lcd.print(sprayDelay / 1000);
-            lcd.setCursor(0,1);
+            lcd.setCursor(0, 1);
             lcd.print(F("save       >"));
           }
           else {
             lcd.print(F("Spray delay:"));
-            lcd.setCursor(0,1);
+            lcd.setCursor(0, 1);
             lcd.print(sprayDelay / 1000);
           }
-        break;
+          break;
         case spraysRemainingMenu:
-           if(isInSubMenu) {
+          if (isInSubMenu) {
             lcd.print(F("Reset sprays left?"));
-            lcd.setCursor(0,1);
+            lcd.setCursor(0, 1);
             lcd.print("<no     yes>");
-            }
-           else {
+          }
+          else {
             lcd.print(F("Sprays left:"));
-            lcd.setCursor(0,1);
+            lcd.setCursor(0, 1);
             lcd.print(spraysRemaining);
-           }
-        break;
+          }
+          break;
         case exitMenu:
           lcd.print(F("Exit"));
-        break;
+          break;
       }
       break;
-      default:
-        lcd.setCursor(0,0);
-        lcd.print(F("It's ")); 
-        lcd.print(getTemperature()); 
-        lcd.print(F(" degrees"));
-        lcd.setCursor(0,1);
-        lcd.print(F("celcius."));
-        // If the interrupt to go to menu fired, this shouldn't have been printed. clear it.
-        if(state == menu) {
-          clearLCD();
-        }
+    default:
+      lcd.setCursor(0, 0);
+      lcd.print(F("It's "));
+      lcd.print(getTemperature());
+      lcd.print(F(" degrees"));
+      lcd.setCursor(0, 1);
+      lcd.print(F("celcius."));
+      // If the interrupt to go to menu fired, this shouldn't have been printed. clear it.
+      if (state == menu) {
+        clearLCD();
+      }
       break;
-   }
+  }
 }
 
 void clearLCD() {
