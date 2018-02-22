@@ -10,7 +10,7 @@ float temperature;
 
 const int magnet = 19;
 const int trig = 16; // Distance sensor trigger
-const int echo = 18; // Distance sensor echo
+const int echo = 17; // Distance sensor echo
 long duration, cm, inches;
 
 void setupSensors() {
