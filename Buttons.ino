@@ -54,7 +54,7 @@ void checkButtons() {
     else {     // if we are in a submenu, do submenu things:
       switch (menuState) {
         case sprayDelayMenu: // raise the spray delay...
-          sprayDelay *= 2;
+          sprayDelay += 1000;
           if (sprayDelay > maxSprayDelay) {
             sprayDelay = 0;
           }
