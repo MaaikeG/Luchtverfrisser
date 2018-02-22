@@ -22,7 +22,7 @@ enum State {
   menu
 };
 
-uint8_t state = notInUse;
+enum State state = notInUse;
 bool stateChanged;
 
 // notInUse variables
