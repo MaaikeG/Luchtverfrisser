@@ -1,4 +1,4 @@
-const uint8_t freshenerPin = 12;
+const uint8_t freshenerPin = 13;
 
 const uint8_t debounceDelay = 50;
 unsigned long lastDebounceTime;
