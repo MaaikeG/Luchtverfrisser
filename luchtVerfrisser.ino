@@ -10,7 +10,7 @@ int currentButtonStates; // contains current and last states of each button.
 
 // TODO: Save these is EEPROM!!!
 int sprayDelay = 15000; // delay in ms
-uint8_t spraysRemaining = 2400;
+uint16_t spraysRemaining = 2400;
 
 enum State {
   notInUse,
