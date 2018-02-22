@@ -1,8 +1,8 @@
-const uint8_t freshenerPin = 12; //A1 as digital
+const uint8_t freshenerPin = 12;
 
 const uint8_t debounceDelay = 50;
-
 unsigned long lastDebounceTime;
+
 int lastButtonStates;
 int currentButtonStates; // contains current and last states of each button. 
 // The bit on the position that is also the index of the button contains 
@@ -40,6 +40,7 @@ void setup() {
 void loop() {
   printLcd();
   setLedColor();
+
   switch (state) {
     case menu:
       checkButtons();
