@@ -2,6 +2,9 @@ const uint8_t manualOverride = 2,
               buttonScroll = 3,
               buttonSelect = 15; //A1 as digital
 
+const uint16_t maxSprayDelay = 32000;
+const uint16_t startSpraysRemaining = 2400;
+
 enum MenuItems {
   sprayDelayMenu,
   spraysRemainingMenu,
@@ -44,15 +47,15 @@ void checkButtons() {
     clearLCD();
     if (!isInSubMenu) {    // If we are not in a submenu, we scroll through the menu.
       menuState++;
-      if (menuState > 2) { // it wraps around
-        menuState = 0;
+      if (menuState > exitMenu) { // it wraps around
+        menuState = sprayDelayMenu;
       }
     }
     else {     // if we are in a submenu, do submenu things:
       switch (menuState) {
         case sprayDelayMenu: // raise the spray delay...
           sprayDelay *= 2;
-          if (sprayDelay > 32000) { // max 32 second delay
+          if (sprayDelay > maxSprayDelay) {
             sprayDelay = 0;
           }
           break;
@@ -97,6 +100,6 @@ bool checkButton(int button, bool * pButtonStateChanged) {
 }
 
 void resetSpraysRemaining() {
-  spraysRemaining = 2400;
+  spraysRemaining = startSpraysRemaining;
 }
 
