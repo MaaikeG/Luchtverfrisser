@@ -1,6 +1,7 @@
 const uint8_t red = 9, green = 10, blue = 11;
+const uint8_t maxBrightness = 5;
 int brightness = 0;
-int fadeAmount = 5;
+int fadeAmount = 1;
 
 void setupLEDs() {
   pinMode(red, OUTPUT);
@@ -11,11 +12,11 @@ void setupLEDs() {
 void setLedColor() {
   switch (state) {
     case notInUse:
-      clockWatch(30, &previousUpdateMillis, []() {
+      clockWatch(300, &previousUpdateMillis, []() {
         brightness = brightness + fadeAmount;
         analogWrite(green, brightness);
 
-        if (brightness <= 0 || brightness >= 255)
+        if (brightness <= 0 || brightness >= maxBrightness)
           fadeAmount = -fadeAmount;
       });
 
@@ -24,7 +25,7 @@ void setLedColor() {
       break;
     case useUnknown:
       if (stateChanged)
-        digitalWrite(green, HIGH);
+        analogWrite(green, maxBrightness);
       break;
   }
 }
