@@ -11,7 +11,7 @@ void printLcd() {
   switch (state) {
     case triggered:
       lcd.setCursor(0,0);
-      lcd.print("triggered!");
+      lcd.print(F("triggered!"));
     break;
     case menu: 
       lcd.setCursor(0,0);
@@ -20,34 +20,38 @@ void printLcd() {
           if(isInSubMenu) {
             lcd.print(sprayDelay / 1000);
             lcd.setCursor(0,1);
-            lcd.print("save       >");
+            lcd.print(F("save       >"));
           }
           else {
-            lcd.print("Spray delay:");
+            lcd.print(F("Spray delay:"));
             lcd.setCursor(0,1);
             lcd.print(sprayDelay / 1000);
           }
         break;
         case spraysRemainingMenu:
            if(isInSubMenu) {
-            lcd.print("Reset sprays left?");
+            lcd.print(F("Reset sprays left?"));
             lcd.setCursor(0,1);
             lcd.print("<no     yes>");
             }
            else {
-            lcd.print("Sprays left:");
+            lcd.print(F("Sprays left:"));
             lcd.setCursor(0,1);
             lcd.print(spraysRemaining);
            }
         break;
         case exitMenu:
-          lcd.print("Exit");
+          lcd.print(F("Exit"));
         break;
       }
       break;
       default:
-        lcd.setCursor(0, 1);
-        lcd.print("Temp: " + getTemperatureString());
+        lcd.setCursor(0,0);
+        lcd.print(F("It's ")); 
+        lcd.print(getTemperature()); 
+        lcd.print(F(" degrees"));
+        lcd.setCursor(0,1);
+        lcd.print(F("celcius."));
       break;
    }
 }

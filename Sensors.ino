@@ -4,7 +4,11 @@
 #define ONE_WIRE_BUS 14 // Temperature sensor input
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
+unsigned long lastTempReading = 0;
+int tempReadDelay = 1000;
+float temperature;
 
+const int magnet = 19;
 const int trig = 16; // Distance sensor trigger
 const int echo = 18; // Distance sensor echo
 long duration, cm, inches;
@@ -15,9 +19,13 @@ void setupSensors() {
     pinMode(echo, INPUT);
 }
 
-String getTemperatureString() {
-  sensors.requestTemperatures(); // Send the command to get temperatures
-  return String(sensors.getTempCByIndex(0));
+int getTemperature() {
+  if (millis() - lastTempReading >= tempReadDelay) {
+    sensors.requestTemperatures(); // Send the command to get temperatures
+    temperature = sensors.getTempCByIndex(0);
+    lastTempReading = millis();
+  }
+  return temperature;
 }
 
 int getDistance() {
@@ -41,5 +49,9 @@ int getDistance() {
   Serial.print(cm);
   Serial.print("cm");
   Serial.println();
+}
+
+int getMagnetState() {
+  return debouncedDigitalRead(magnet); 
 }
 

@@ -4,8 +4,8 @@ const uint8_t debounceDelay = 50;
 unsigned long lastDebounceTime;
 
 int lastButtonStates;
-int currentButtonStates; // contains current and last states of each button. 
-// The bit on the position that is also the index of the button contains 
+int currentButtonStates; // contains current and last states of each button.
+// The bit on the position that is also the index of the button contains
 // the last state for that button.
 
 // TODO: Save these is EEPROM!!!
@@ -40,7 +40,7 @@ void setup() {
 void loop() {
   printLcd();
   setLedColor();
-
+  Serial.print(getMagnetState());
   switch (state) {
     case menu:
       checkButtons();
@@ -55,9 +55,10 @@ void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()) {
 }
 
 bool debouncedDigitalRead(int buttonPin) {
-  uint8_t bitPosition = buttonPin/2;
+  uint8_t bitPosition = buttonPin / 2;
   int currentState = (currentButtonStates & (1 << bitPosition)) > 0;
   int lastState = (lastButtonStates & (1 << bitPosition)) > 0;
+
   int reading = digitalRead(buttonPin);
 
   if (reading != lastState) {
@@ -68,15 +69,15 @@ bool debouncedDigitalRead(int buttonPin) {
   if ((millis() - lastDebounceTime) > debounceDelay) {
     // whatever the reading is at, it's been there for longer than the debounce
     // delay, so take it as the actual current state:
-     if (reading != currentState) {
+    if (reading != currentState) {
       currentState = reading;
-      currentButtonStates ^= (-reading ^ currentButtonStates) & (1UL << bitPosition);  
-     }
+      currentButtonStates ^= (-reading ^ currentButtonStates) & (1UL << bitPosition);
+    }
   }
   // save reading for next time in the loop.
   lastButtonStates ^= (-reading ^ lastButtonStates) & (1UL << bitPosition);
-  
-  return currentState; 
+
+  return currentState;
 }
 
 
