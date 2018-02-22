@@ -52,6 +52,10 @@ void printLcd() {
         lcd.print(F(" degrees"));
         lcd.setCursor(0,1);
         lcd.print(F("celcius."));
+        // If the interrupt to go to menu fired, this shouldn't have been printed. clear it.
+        if(state == menu) {
+          clearLCD();
+        }
       break;
    }
 }

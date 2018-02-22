@@ -40,7 +40,7 @@ void setup() {
 void loop() {
   printLcd();
   setLedColor();
-  Serial.print(getMagnetState());
+
   switch (state) {
     case menu:
       checkButtons();
@@ -49,7 +49,7 @@ void loop() {
 
 void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()) {
   if (millis() - *lastRunMillis >= frequency) {
-    previousUpdateMillis = millis();
+    *lastRunMillis = millis();
     (*f)();
   }
 }

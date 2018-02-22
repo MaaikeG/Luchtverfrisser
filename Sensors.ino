@@ -20,11 +20,11 @@ void setupSensors() {
 }
 
 int getTemperature() {
-  if (millis() - lastTempReading >= tempReadDelay) {
-    sensors.requestTemperatures(); // Send the command to get temperatures
-    temperature = sensors.getTempCByIndex(0);
-    lastTempReading = millis();
-  }
+  clockWatch(tempReadDelay, &lastTempReading, [](){
+      // Send the command to get temperatures
+        sensors.requestTemperatures();
+        temperature = sensors.getTempCByIndex(0);
+      });
   return temperature;
 }
 
