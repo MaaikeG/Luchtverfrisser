@@ -9,8 +9,6 @@ bool isInSubMenu;
 uint8_t menuState;
 bool scrollStateChanged;
 bool selectStateChanged;
-bool * pScrollStateChanged = &scrollStateChanged;
-bool * pSelectStateChanged = &selectStateChanged;
 
 void enterMenu() {
   detachInterrupt(digitalPinToInterrupt(buttonScroll));
@@ -53,7 +51,7 @@ void showMenu(){
 }
 
 void checkButtons() {
-  if (checkButton(buttonScroll, pScrollStateChanged)) {
+  if (checkButton(buttonScroll, &scrollStateChanged)) {
     clearLCD();
     if (!isInSubMenu) {    // If we are not in a submenu, we scroll through the menu.
       menuState++;
@@ -76,7 +74,7 @@ void checkButtons() {
     }
   }
 
-  if (checkButton(buttonSelect, pSelectStateChanged)) {
+  if (checkButton(buttonSelect, &selectStateChanged)) {
     clearLCD();
     switch (menuState) {
       case exitMenu: // exit selected, get back out of menu.

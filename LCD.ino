@@ -4,7 +4,7 @@ const int rs = 8, en = 12, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 
 unsigned long lastTempReading = 0;
-int tempReadDelay = 1000;
+const uint8_t tempReadDelaySeconds = 1;
 
 void setupLCD() {
   lcd.begin(16, 2);
@@ -20,7 +20,7 @@ void printLcd() {
       showMenu();
       break;
     default:
-      clockWatch(tempReadDelay, &lastTempReading, []() {
+      clockWatch(tempReadDelaySeconds * 1000, &lastTempReading, []() {
         lcd.setCursor(0, 0);
         lcd.print(F("It's "));
         lcd.print(getTemperature());
