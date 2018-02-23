@@ -1,9 +1,3 @@
-enum MenuItems {
-  sprayDelayMenu,
-  spraysRemainingMenu,
-  exitMenu
-};
-
 bool isInSubMenu;
 
 uint8_t menuState;
@@ -12,103 +6,93 @@ bool selectStateChanged;
 bool * pScrollStateChanged = &scrollStateChanged;
 bool * pSelectStateChanged = &selectStateChanged;
 
-void enterMenu() {
-  detachInterrupt(digitalPinToInterrupt(buttonScroll));
-  state = menu;
-  menuState = sprayDelayMenu;
-  clearLCD();
-}
-
 void showMenu(){
-  lcd.setCursor(0, 0);
-  switch (menuState) {
+  lcd.setCursor(0,0);
+  switch (menuState){
     case sprayDelayMenu:
-      if (isInSubMenu) {
+      if(isInSubMenu) {
         lcd.print(sprayDelay / 1000);
-        lcd.setCursor(0, 1);
+        lcd.setCursor(0,1);
         lcd.print(F("save       >"));
       }
       else {
         lcd.print(F("Spray delay:"));
-        lcd.setCursor(0, 1);
+        lcd.setCursor(0,1);
         lcd.print(sprayDelay / 1000);
       }
-      break;
+    break;
     case spraysRemainingMenu:
-      if (isInSubMenu) {
+       if(isInSubMenu) {
         lcd.print(F("Reset sprays left?"));
-        lcd.setCursor(0, 1);
+        lcd.setCursor(0,1);
         lcd.print("<no     yes>");
-      }
-      else {
+        }
+       else {
         lcd.print(F("Sprays left:"));
-        lcd.setCursor(0, 1);
+        lcd.setCursor(0,1);
         lcd.print(spraysRemaining);
-      }
-      break;
+       }
+    break;
     case exitMenu:
       lcd.print(F("Exit"));
-      break;
+    break;
   }
 }
 
+void doManualOverride() {
+  state = triggered;
+  stateChanged = true;
+}
+
+void enterMenu() {      
+  menuState = sprayDelayMenu;
+  state = menu;
+  stateChanged = true;
+}    
+
 void checkButtons() {
   if (checkButton(buttonScroll, pScrollStateChanged)) {
-    clearLCD();
-    if (!isInSubMenu) {    // If we are not in a submenu, we scroll through the menu.
+    if(!isInSubMenu) {     // If we are not in a submenu, we scroll through the menu.
       menuState++;
-      if (menuState > exitMenu) { // it wraps around
-        menuState = sprayDelayMenu;
+      if (menuState > 2) { // it wraps around
+        menuState = 0;
       }
     }
     else {     // if we are in a submenu, do submenu things:
       switch (menuState) {
         case sprayDelayMenu: // raise the spray delay...
-          sprayDelay += 1000;
-          if (sprayDelay > maxSprayDelay) {
+          sprayDelay *= 2;
+          if (sprayDelay > 32000){ // max 32 second delay
             sprayDelay = 0;
           }
-          break;
+        break;
         case spraysRemainingMenu: // Or cancel a reset
           isInSubMenu = !isInSubMenu;
-          break;
+        break;
       }
     }
+    stateChanged = true;
   }
 
   if (checkButton(buttonSelect, pSelectStateChanged)) {
-    clearLCD();
     switch (menuState) {
       case exitMenu: // exit selected, get back out of menu.
-        attachInterrupt(digitalPinToInterrupt(buttonScroll), enterMenu, FALLING);
-        state = notInUse;
-        break;
+         state = notInUse;
+        break; 
       case sprayDelayMenu:  //right spray delay selected by user, or selected to go into submenu.
-        isInSubMenu = !isInSubMenu;
-        break;
-      case spraysRemainingMenu:
-        if (isInSubMenu) { // user selected to do a reset
+         isInSubMenu = !isInSubMenu;
+      break;
+      case spraysRemainingMenu: 
+        if (isInSubMenu){  // user selected to do a reset
           resetSpraysRemaining();
         }
         isInSubMenu = !isInSubMenu; //... or selected the sprays remaining option.
-        break;
+      break;
     }
+    stateChanged = true;
   }
-}
-
-bool checkButton(int button, bool * pButtonStateChanged) {
-  int buttonState = debouncedDigitalRead(button);
-
-  if (buttonState == LOW && *pButtonStateChanged) {
-    *pButtonStateChanged = false;
-    return true;
-  }
-  if (buttonState == HIGH) {
-    *pButtonStateChanged = true;
-  }
-  return false;
 }
 
 void resetSpraysRemaining() {
-  spraysRemaining = startSpraysRemaining;
+  spraysRemaining = 2400;
 }
