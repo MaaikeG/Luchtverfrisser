@@ -8,7 +8,6 @@ DallasTemperature sensors(&oneWire);
 const int magnet = 19;
 const int trig = 16; // Distance sensor trigger
 const int echo = 17; // Distance sensor echo
-long duration, cm, inches;
 
 const uint8_t debounceDelay = 50;
 unsigned long lastDebounceTime;
@@ -43,10 +42,10 @@ int getDistance() {
   // duration is the time (in microseconds) from the sending
   // of the ping to the reception of its echo off of an object.
   pinMode(echo, INPUT);
-  duration = pulseIn(echo, HIGH);
+  unsigned long duration = pulseIn(echo, HIGH);
 
   // convert the time into a distance
-  cm = (duration / 2) / 29.1;
+  unsigned long cm = (duration / 2) / 29.1;
 
   Serial.print(cm);
   Serial.print("cm");
