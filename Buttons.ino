@@ -2,15 +2,8 @@ const uint8_t manualOverride = 2,
               buttonScroll = 3,
               buttonSelect = 15; //A1 as digital
 
-enum MenuItems {
-  sprayDelayMenu,
-  spraysRemainingMenu,
-  exitMenu
-};
-
 bool isInSubMenu;
 
-uint8_t menuState;
 bool scrollStateChanged;
 bool selectStateChanged;
 bool * pScrollStateChanged = &scrollStateChanged;
@@ -20,28 +13,34 @@ void setupButtons() {
   pinMode(buttonScroll, INPUT);
   pinMode(buttonSelect, INPUT); 
   pinMode(manualOverride, INPUT);
+  attachInterrupts();
+}
+
+void attachInterrupts() {
+  Serial.println("Attaching...");
   attachInterrupt(digitalPinToInterrupt(manualOverride), doManualOverride, FALLING);
   attachInterrupt(digitalPinToInterrupt(buttonScroll), enterMenu, FALLING);
 }
 
-void doManualOverride() {
-  if (state = menu) {
-    attachInterrupt(digitalPinToInterrupt(buttonScroll), enterMenu, FALLING);
-  }
-  clearLCD();
-  state = triggered;
+void detachInterrupts() {
+  Serial.println("Detaching...");
+  detachInterrupt(digitalPinToInterrupt(manualOverride));
+  detachInterrupt(digitalPinToInterrupt(buttonScroll));
 }
 
-void enterMenu() {
-  detachInterrupt(digitalPinToInterrupt(buttonScroll));
-  state = menu;
+void doManualOverride() {
+  state = triggered;
+  stateChanged = true;
+}
+
+void enterMenu() {      
   menuState = sprayDelayMenu;
-  clearLCD();
+  state = menu;
+  stateChanged = true;
 }    
 
 void checkButtons() {
   if (checkButton(buttonScroll, pScrollStateChanged)) {
-    clearLCD();
     if(!isInSubMenu) {     // If we are not in a submenu, we scroll through the menu.
       menuState++;
       if (menuState > 2) { // it wraps around
@@ -61,15 +60,14 @@ void checkButtons() {
         break;
       }
     }
+    stateChanged = true;
   }
 
   if (checkButton(buttonSelect, pSelectStateChanged)) {
-    clearLCD();
     switch (menuState) {
       case exitMenu: // exit selected, get back out of menu.
-         attachInterrupt(digitalPinToInterrupt(buttonScroll), enterMenu, FALLING);
          state = notInUse;
-      break; 
+        break; 
       case sprayDelayMenu:  //right spray delay selected by user, or selected to go into submenu.
          isInSubMenu = !isInSubMenu;
       break;
@@ -80,6 +78,7 @@ void checkButtons() {
         isInSubMenu = !isInSubMenu; //... or selected the sprays remaining option.
       break;
     }
+    stateChanged = true;
   }
 }
 

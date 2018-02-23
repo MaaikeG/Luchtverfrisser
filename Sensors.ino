@@ -10,7 +10,7 @@ float temperature;
 
 const int magnet = 19;
 const int trig = 16; // Distance sensor trigger
-const int echo = 18; // Distance sensor echo
+const int echo = 17; // Distance sensor echo
 long duration, cm, inches;
 
 void setupSensors() {
@@ -40,7 +40,6 @@ int getDistance() {
   // Read the signal from the sensor: a HIGH pulse whose
   // duration is the time (in microseconds) from the sending
   // of the ping to the reception of its echo off of an object.
-  pinMode(echo, INPUT);
   duration = pulseIn(echo, HIGH);
  
   // convert the time into a distance
