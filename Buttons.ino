@@ -2,6 +2,8 @@ const uint8_t manualOverride = 2,
               buttonScroll = 3,
               buttonSelect = 15; //A1 as digital
 
+unsigned long lastInterruptFired;
+
 void setupButtons() {
   pinMode(buttonScroll, INPUT);
   pinMode(buttonSelect, INPUT); 
@@ -10,16 +12,15 @@ void setupButtons() {
 }
 
 void attachInterrupts() {
-  Serial.println("Attaching...");
+  lastInterruptFired = millis();
   attachInterrupt(digitalPinToInterrupt(manualOverride), doManualOverride, FALLING);
   attachInterrupt(digitalPinToInterrupt(buttonScroll), enterMenu, FALLING);
 }
 
 void detachInterrupts() {
-  Serial.println("Detaching...");
   detachInterrupt(digitalPinToInterrupt(manualOverride));
   detachInterrupt(digitalPinToInterrupt(buttonScroll));
-}
+} 
 
 bool checkButton(int button, bool * pButtonStateChanged) {
   int buttonState = debouncedDigitalRead(button);

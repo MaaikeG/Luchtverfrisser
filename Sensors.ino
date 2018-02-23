@@ -5,6 +5,10 @@
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
 
+unsigned long lastTempReading = 0;
+int tempReadDelay = 30000; // read temp once every 30 seconds
+float temperature;
+ 
 const int magnet = 19;
 const int trig = 16; // Distance sensor trigger
 const int echo = 17; // Distance sensor echo
@@ -25,9 +29,12 @@ void setupSensors() {
 }
 
 int getTemperature() {
+  clockWatch(tempReadDelay, &lastTempReading, [](){
+     sensors.requestTemperatures(); // Send the command to get temperatures
+     temperature = sensors.getTempCByIndex(0);
+  });
   // Send the command to get temperatures
-  sensors.requestTemperatures();
-  return sensors.getTempCByIndex(0);
+  return temperature;
 }
 
 int getDistance() {

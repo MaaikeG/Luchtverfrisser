@@ -1,5 +1,5 @@
 bool isInSubMenu;
-
+int interruptDelay = 50;
 uint8_t menuState;
 bool scrollStateChanged;
 bool selectStateChanged;
@@ -40,14 +40,20 @@ void showMenu(){
 }
 
 void doManualOverride() {
-  state = triggered;
-  stateChanged = true;
+  if (millis() - lastInterruptFired > interruptDelay) {
+    state = triggered;
+    stateChanged = true;
+    lastInterruptFired = millis();
+  }
 }
 
 void enterMenu() {      
-  menuState = sprayDelayMenu;
-  state = menu;
-  stateChanged = true;
+  if (millis() - lastInterruptFired > interruptDelay) {
+    menuState = sprayDelayMenu;
+    state = menu;
+    stateChanged = true;
+    lastInterruptFired = millis();
+  }
 }    
 
 void checkButtons() {

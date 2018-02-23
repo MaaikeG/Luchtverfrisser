@@ -23,9 +23,6 @@ uint8_t state = notInUse;
 //uint8_t menuState;
 bool stateChanged;
 
-// notInUse variables
-unsigned long previousUpdateMillis;
-
 void setup() {
   Serial.begin(9600);
   setupLEDs();
@@ -34,6 +31,7 @@ void setup() {
   setupButtons();
   pinMode(freshenerPin, OUTPUT);
   stateChanged = true;
+  getTemperature();
 }
 
 void loop() {
@@ -47,6 +45,7 @@ void loop() {
       changeLEDcolor();
     case menu:
       checkButtons();
+      changeLEDcolor();
       break;
     case triggered:
       changeLEDcolor();
@@ -71,32 +70,3 @@ void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()) {
     (*f)();
   }
 }
-//
-//bool debouncedDigitalRead(int buttonPin) {
-//  uint8_t bitPosition = buttonPin / 2;
-//  int currentState = (currentButtonStates & (1 << bitPosition)) > 0;
-//  int lastState = (lastButtonStates & (1 << bitPosition)) > 0;
-//
-//  int reading = digitalRead(buttonPin);
-//
-//  if (reading != lastState) {
-//    // reset the debouncing timer
-//    lastDebounceTime = millis();
-//  }
-//
-//  if ((millis() - lastDebounceTime) > debounceDelay) {
-//    // whatever the reading is at, it's been there for longer than the debounce
-//    // delay, so take it as the actual current state:
-//    if (reading != currentState) {
-//      currentState = reading;
-//      currentButtonStates ^= (-reading ^ currentButtonStates) & (1UL << bitPosition);
-//    }
-//  }
-//  // save reading for next time in the loop.
-//  lastButtonStates ^= (-reading ^ lastButtonStates) & (1UL << bitPosition);
-//
-//  return currentState;
-//}
-
-
-
