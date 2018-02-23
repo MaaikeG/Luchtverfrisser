@@ -1,4 +1,4 @@
-const uint8_t freshenerPin = 12;
+const uint8_t freshenerPin = 13;
 
 const uint8_t debounceDelay = 50;
 unsigned long lastDebounceTime;
@@ -8,7 +8,7 @@ int currentButtonStates; // contains current and last states of each button.
 // The bit on the position that is also the index of the button contains
 // the last state for that button.
 
-// TODO: Save these is EEPROM!!!
+// TODO: Save these in EEPROM!!!
 int sprayDelay = 15000; // delay in ms
 uint8_t spraysRemaining = 2400;
 
@@ -21,8 +21,14 @@ enum State {
   triggered,
   menu
 };
+enum MenuItems {
+  sprayDelayMenu,
+  spraysRemainingMenu,
+  exitMenu
+};
 
 uint8_t state = notInUse;
+uint8_t menuState;
 bool stateChanged;
 
 // notInUse variables
@@ -35,15 +41,35 @@ void setup() {
   setupSensors();
   setupButtons();
   pinMode(freshenerPin, OUTPUT);
+  stateChanged = true;
 }
 
 void loop() {
-  printLcd();
-  setLedColor();
-
-  switch (state) {
+  if(stateChanged) { // handle a state change
+    doStateTransition();
+    stateChanged = false;
+  }
+   switch (state) {
+    case notInUse:
+      printTemperature();
+      changeLEDcolor();
     case menu:
       checkButtons();
+      break;
+    case triggered:
+      changeLEDcolor();
+      break;
+  }
+}
+
+void doStateTransition() {
+  setLEDColor();
+  setLCD();
+  if (state != menu) {
+    attachInterrupts();
+  }
+  else {
+    detachInterrupts();
   }
 }
 
