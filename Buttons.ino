@@ -17,6 +17,3 @@ void doManualOverride() {
   clearLCD();
   state = triggered;
 }
-
-
-

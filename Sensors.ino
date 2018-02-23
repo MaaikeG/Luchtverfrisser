@@ -10,6 +10,14 @@ const int trig = 16; // Distance sensor trigger
 const int echo = 17; // Distance sensor echo
 long duration, cm, inches;
 
+const uint8_t debounceDelay = 50;
+unsigned long lastDebounceTime;
+
+int lastButtonStates;
+int currentButtonStates; // contains current and last states of each button.
+// The bit on the position that is also the index of the button contains
+// the last state for that button.
+
 void setupSensors() {
   sensors.begin();
   pinMode(trig, OUTPUT);
@@ -47,5 +55,31 @@ int getDistance() {
 
 int getMagnetState() {
   return debouncedDigitalRead(magnet);
+}
+
+bool debouncedDigitalRead(int buttonPin) {
+  uint8_t bitPosition = buttonPin / 2;
+  int currentState = (currentButtonStates & (1 << bitPosition)) > 0;
+  int lastState = (lastButtonStates & (1 << bitPosition)) > 0;
+
+  int reading = digitalRead(buttonPin);
+
+  if (reading != lastState) {
+    // reset the debouncing timer
+    lastDebounceTime = millis();
+  }
+
+  if ((millis() - lastDebounceTime) > debounceDelay) {
+    // whatever the reading is at, it's been there for longer than the debounce
+    // delay, so take it as the actual current state:
+    if (reading != currentState) {
+      currentState = reading;
+      currentButtonStates ^= (-reading ^ currentButtonStates) & (1UL << bitPosition);
+    }
+  }
+  // save reading for next time in the loop.
+  lastButtonStates ^= (-reading ^ lastButtonStates) & (1UL << bitPosition);
+
+  return currentState;
 }
 
