@@ -8,6 +8,8 @@ int currentButtonStates; // contains current and last states of each button.
 // The bit on the position that is also the index of the button contains
 // the last state for that button.
 
+const uint16_t maxSprayDelay = 32000;
+const uint16_t startSpraysRemaining = 2400;
 // TODO: Save these is EEPROM!!!
 int sprayDelay = 15000; // delay in ms
 uint16_t spraysRemaining = 2400;

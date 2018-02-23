@@ -17,36 +17,7 @@ void printLcd() {
       lcd.print(F("triggered!"));
       break;
     case menu:
-      lcd.setCursor(0, 0);
-      switch (menuState) {
-        case sprayDelayMenu:
-          if (isInSubMenu) {
-            lcd.print(sprayDelay / 1000);
-            lcd.setCursor(0, 1);
-            lcd.print(F("save       >"));
-          }
-          else {
-            lcd.print(F("Spray delay:"));
-            lcd.setCursor(0, 1);
-            lcd.print(sprayDelay / 1000);
-          }
-          break;
-        case spraysRemainingMenu:
-          if (isInSubMenu) {
-            lcd.print(F("Reset sprays left?"));
-            lcd.setCursor(0, 1);
-            lcd.print("<no     yes>");
-          }
-          else {
-            lcd.print(F("Sprays left:"));
-            lcd.setCursor(0, 1);
-            lcd.print(spraysRemaining);
-          }
-          break;
-        case exitMenu:
-          lcd.print(F("Exit"));
-          break;
-      }
+      showMenu();
       break;
     default:
       clockWatch(tempReadDelay, &lastTempReading, []() {
