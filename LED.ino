@@ -1,6 +1,7 @@
 const uint8_t red = 9, green = 10, blue = 11;
 int rgbBrightness[3];
-int fadeAmount = 5;
+int fadeAmount = 1;
+byte maxBrightness = 50;
 
 unsigned long previousUpdateMillis;
 
@@ -45,10 +46,10 @@ byte incColour = 1;
 void changeLEDcolor() {
   switch (state) {
     case notInUse:
-      clockWatch(20, &previousUpdateMillis, [](){
+      clockWatch(50, &previousUpdateMillis, [](){
         rgbBrightness[1] += fadeAmount;   
         outputLEDs();     
-        if (rgbBrightness[1] <= 0 || rgbBrightness[1] >= 150){
+        if (rgbBrightness[1] <= 0 || rgbBrightness[1] >= maxBrightness){
           fadeAmount = -fadeAmount;
         }
       });
@@ -71,7 +72,7 @@ void changeLEDcolor() {
         }
       incColour = decColour == 2 ? 0 : decColour + 1;
 
-      clockWatch(10, &previousUpdateMillis, [](){
+      clockWatch(5, &previousUpdateMillis, [](){
         rgbBrightness[decColour] -= fadeAmount;
         rgbBrightness[incColour] += fadeAmount;
         outputLEDs();
