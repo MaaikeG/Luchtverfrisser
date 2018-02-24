@@ -1,6 +1,4 @@
-bool isInSubMenu;
 int interruptDelay = 50;
-uint8_t menuState;
 
 const uint16_t maxSprayDelay = 32000;
 const uint16_t startSpraysRemaining = 2400;
@@ -9,6 +7,14 @@ bool scrollStateChanged;
 bool selectStateChanged;
 bool * pScrollStateChanged = &scrollStateChanged;
 bool * pSelectStateChanged = &selectStateChanged;
+
+uint8_t menuState;
+bool isInSubMenu;
+enum MenuItems {
+  sprayDelayMenu,
+  spraysRemainingMenu,
+  exitMenu
+};
 
 void showMenu() {
   lcd.setCursor(0, 0);
@@ -52,7 +58,7 @@ void doManualOverride() {
 }
 
 void enterMenu() {
-  if (millis() - lastInterruptFired > interruptDelay) {
+  if (millis() - lastInterruptFired > interruptDelay && state != menu) {
     menuState = sprayDelayMenu;
     state = menu;
     stateChanged = true;

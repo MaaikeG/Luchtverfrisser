@@ -13,11 +13,6 @@ enum State {
   triggered,
   menu
 };
-enum MenuItems {
-  sprayDelayMenu,
-  spraysRemainingMenu,
-  exitMenu
-};
 
 enum State state = notInUse;
 //uint8_t menuState;
@@ -56,12 +51,6 @@ void loop() {
 void doStateTransition() {
   setLEDColor();
   setLCD();
-  if (state != menu) {
-    attachInterrupts();
-  }
-  else {
-    detachInterrupts();
-  }
 }
 
 void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()) {
