@@ -13,13 +13,8 @@ DallasTemperature sensors(&oneWire);
 NewPing sonar(trig, echo, maxDistance); // NewPing setup of pins and maximum distance.
 unsigned int lastMotionDetected;
 
-<<<<<<< HEAD
-=======
 float temperature;
-unsigned long lastTempReading = 0;
-int tempReadDelaySeconds = 30;
 
->>>>>>> 8182615ae19e44887e1d07373cd7fc58b0bfbdba
 const int magnet = 19;
 const int motion = 18;
 
@@ -36,19 +31,9 @@ void setupSensors() {
   sensors.begin();
 }
 
-<<<<<<< HEAD
 int getTemperature() { 
   sensors.requestTemperatures(); // Send the command to get temperatures
   return sensors.getTempCByIndex(0);
-=======
-int getTemperature() {
-  clockWatch(tempReadDelaySeconds * 1000, &lastTempReading, []() {
-    sensors.requestTemperatures(); // Send the command to get temperatures
-    temperature = sensors.getTempCByIndex(0);
-  });
-  // Send the command to get temperatures
-  return temperature;
->>>>>>> 8182615ae19e44887e1d07373cd7fc58b0bfbdba
 }
 
 int getDistance() {
