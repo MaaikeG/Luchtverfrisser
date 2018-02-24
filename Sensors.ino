@@ -27,6 +27,8 @@ unsigned int currentButtonStates; // contains current and last states of each bu
 // The bit on the position that is also the index of the button contains
 // the last state for that button.
 
+unsigned int lastMotionDetected;
+
 void setupSensors() {
   sensors.begin();
 }
@@ -48,8 +50,13 @@ int getMagnetState() {
   return debouncedDigitalRead(magnet);
 }
 
+void detectMotion() {
+  if (digitalRead(motion)) {
+    lastMotionDetected = millis();
+  }
+}
 int getMotionState() {
-  return digitalRead(motion);
+  return lastMotionDetected;
 }
 
 bool debouncedDigitalRead(int buttonPin) {
