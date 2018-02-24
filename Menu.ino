@@ -56,7 +56,8 @@ void doManualOverride() {
 
 void enterMenu() {
   if (state != menu) {
-    menuState = sprayDelayMenu;
+    //go to the exit menu, because a scroll press will be detected and we wrap around
+    menuState = exitMenu;
     state = menu;
     stateChanged = true;
   }
