@@ -11,11 +11,8 @@ DallasTemperature sensors(&oneWire);
 #define maxDistance 100 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 
 NewPing sonar(trig, echo, maxDistance); // NewPing setup of pins and maximum distance.
+unsigned int lastMotionDetected;
 
-float temperature;
-unsigned long lastTempReading = 0;
-int tempReadDelaySeconds = 30;  
- 
 const int magnet = 19;
 const int motion = 18;
 
@@ -27,27 +24,18 @@ unsigned int currentButtonStates; // contains current and last states of each bu
 // The bit on the position that is also the index of the button contains
 // the last state for that button.
 
-unsigned int lastMotionDetected;
 
 void setupSensors() {
   sensors.begin();
 }
 
-int getTemperature() {
-   clockWatch(tempReadDelaySeconds * 1000, &lastTempReading, [](){
-     sensors.requestTemperatures(); // Send the command to get temperatures
-     temperature = sensors.getTempCByIndex(0);
-  });
-  // Send the command to get temperatures
-  return temperature;
+int getTemperature() { 
+  sensors.requestTemperatures(); // Send the command to get temperatures
+  return sensors.getTempCByIndex(0);
 }
 
 int getDistance() {
    Serial.print(sonar.ping_cm());
-}
-
-int getMagnetState() {
-  return debouncedDigitalRead(magnet);
 }
 
 void detectMotion() {
@@ -58,6 +46,11 @@ void detectMotion() {
 int getMotionState() {
   return lastMotionDetected;
 }
+
+int getMagnetState() {
+  return debouncedDigitalRead(magnet);
+}
+
 
 bool debouncedDigitalRead(int buttonPin) {
   int bitPosition = buttonPin;
