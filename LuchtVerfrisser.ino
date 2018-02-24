@@ -39,6 +39,9 @@ void loop() {
     case notInUse:
       printTemperature();
       changeLEDcolor();
+      if (getMotionDetectorState()) {
+        setNewState(useUnknown);
+      }
     case menu:
       checkButtons();
       changeLEDcolor();
@@ -47,6 +50,10 @@ void loop() {
       changeLEDcolor();
       break;
   }
+}
+void setNewState(State newState) {
+  state = newState;
+  stateChanged = true;
 }
 
 void doStateTransition() {

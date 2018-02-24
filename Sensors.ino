@@ -15,6 +15,7 @@ NewPing sonar(trig, echo, maxDistance); // NewPing setup of pins and maximum dis
 unsigned long lastMotionDetected; // last time motion was detected.
 unsigned long startMotionSerie; // start of detection of a series of motions
 unsigned long lastMotionDetection; // clockwatch variable
+byte motionDetectorState;
 
 float temperature;
 
@@ -45,12 +46,12 @@ int getDistance() {
 
 void detectMotion() {
     clockWatch(500, &lastMotionDetection, [](){
-      int motionDetected = digitalRead(motion);
-      if (!motionDetected)
+      motionDetectorState = digitalRead(motion);
+      if (!motionDetectorState)
       {
         startMotionSerie = millis();
       }
-      if (motionDetected) {
+      if (motionDetectorState) {
         lastMotionDetected = millis();
       }
   });
@@ -64,6 +65,9 @@ int getLengthMotionDetected() {
   return millis() - startMotionSerie;;
 }
 
+byte getMotionDetectorState() {
+  return motionDetectorState;
+}
 
 bool debouncedDigitalRead(int buttonPin) {
   int bitPosition = buttonPin;
