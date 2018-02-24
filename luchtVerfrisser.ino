@@ -2,7 +2,7 @@ const uint8_t freshenerPin = 13;
 
 // TODO: Save these in EEPROM!!!
 int sprayDelay = 15000; // delay in ms
-uint8_t spraysRemaining = 2400;
+uint16_t spraysRemaining = 2400;
 
 enum State {
   notInUse,
@@ -19,7 +19,7 @@ enum MenuItems {
   exitMenu
 };
 
-uint8_t state = notInUse;
+enum State state = notInUse;
 //uint8_t menuState;
 bool stateChanged;
 
