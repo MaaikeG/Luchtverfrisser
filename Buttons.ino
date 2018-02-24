@@ -1,4 +1,4 @@
-const uint8_t manualOverride = 2, 
+const uint8_t manualOverride = 2,
               buttonScroll = 3,
               buttonSelect = 15; //A1 as digital
 
@@ -6,7 +6,7 @@ unsigned long lastInterruptFired;
 
 void setupButtons() {
   pinMode(buttonScroll, INPUT);
-  pinMode(buttonSelect, INPUT); 
+  pinMode(buttonSelect, INPUT);
   pinMode(manualOverride, INPUT);
   attachInterrupts();
 }
@@ -20,7 +20,7 @@ void attachInterrupts() {
 void detachInterrupts() {
   detachInterrupt(digitalPinToInterrupt(manualOverride));
   detachInterrupt(digitalPinToInterrupt(buttonScroll));
-} 
+}
 
 bool checkButton(int button, bool * pButtonStateChanged) {
   int buttonState = debouncedDigitalRead(button);
@@ -28,7 +28,7 @@ bool checkButton(int button, bool * pButtonStateChanged) {
   if (buttonState == LOW && *pButtonStateChanged) {
     *pButtonStateChanged = false;
     return true;
-  } 
+  }
   if (buttonState == HIGH) {
     *pButtonStateChanged = true;
   }

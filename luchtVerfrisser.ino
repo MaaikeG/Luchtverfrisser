@@ -35,11 +35,11 @@ void setup() {
 }
 
 void loop() {
-  if(stateChanged) { // handle a state change
+  if (stateChanged) { // handle a state change
     doStateTransition();
     stateChanged = false;
   }
-   switch (state) {
+  switch (state) {
     case notInUse:
       printTemperature();
       changeLEDcolor();
