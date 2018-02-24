@@ -8,7 +8,8 @@ DallasTemperature sensors(&oneWire);
 
 #define trig  16  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define echo  17  // Arduino pin tied to echo pin on the ultrasonic sensor.
-#define maxDistance 100 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
+#define maxDistance 200 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
+byte distance;
 
 NewPing sonar(trig, echo, maxDistance); // NewPing setup of pins and maximum distance.
 
@@ -41,10 +42,10 @@ int getTemperature() {
 }
 
 int getDistance() {
-  Serial.print(sonar.ping_cm());
+  return distance;
 }
 
-void detectMotion() {
+void detectStuff() {
     clockWatch(500, &lastMotionDetection, [](){
       motionDetectorState = digitalRead(motion);
       if (!motionDetectorState)
@@ -54,6 +55,7 @@ void detectMotion() {
       if (motionDetectorState) {
         lastMotionDetected = millis();
       }
+      distance = sonar.ping_cm();
   });
 }
 

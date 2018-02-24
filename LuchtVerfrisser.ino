@@ -34,7 +34,8 @@ void loop() {
     doStateTransition();
     stateChanged = false;
   }
-  detectMotion();
+  detectStuff();
+  
   switch (state) {
     case notInUse:
       printTemperature();
@@ -42,6 +43,13 @@ void loop() {
       if (getMotionDetectorState()) {
         setNewState(useUnknown);
       }
+      break;
+    case useUnknown:  
+      Serial.print(getDistance());
+      if (millis - getLastMotionDetected() > 5000 && (getDistance() > 150 || getDistance() == 0)) {
+        setNewState(notInUse);
+      }
+      break;
     case menu:
       checkButtons();
       changeLEDcolor();
