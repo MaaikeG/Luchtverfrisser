@@ -55,7 +55,8 @@ void detectMotion() {
     lastMotionDetected = millis();
   }
 }
-int getMotionState() {
+
+int getLastMotionDetected() {
   return lastMotionDetected;
 }
 
