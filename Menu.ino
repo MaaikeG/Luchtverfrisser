@@ -15,6 +15,7 @@ enum MenuItems {
 };
 
 void showMenu() {
+  lcd.clear();
   lcd.setCursor(0, 0);
   switch (menuState) {
     case sprayDelayMenu:
@@ -50,7 +51,6 @@ void showMenu() {
 void doManualOverride() {
   if(state != triggered){
     state = triggered;
-    stateChanged = true;
   }
 }
 
@@ -59,7 +59,6 @@ void enterMenu() {
     //go to the exit menu, because a scroll press will be detected and we wrap around
     menuState = exitMenu;
     state = menu;
-    stateChanged = true;
   }
 }
 
@@ -84,7 +83,7 @@ void checkButtons() {
           break;
       }
     }
-    stateChanged = true;
+    showMenu();
   }
 
   if (checkButton(buttonSelect, pSelectStateChanged)) {
@@ -102,7 +101,7 @@ void checkButtons() {
         isInSubMenu = !isInSubMenu; //... or selected the sprays remaining option.
         break;
     }
-    stateChanged = true;
+    showMenu();
   }
 }
 
