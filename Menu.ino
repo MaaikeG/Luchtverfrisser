@@ -15,6 +15,7 @@ enum MenuItems {
 };
 
 void showMenu() {
+  lcd.clear();
   lcd.setCursor(0, 0);
   switch (menuState) {
     case sprayDelayMenu:
