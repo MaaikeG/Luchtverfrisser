@@ -35,11 +35,12 @@ void loop() {
     stateChanged = false;
   }
   detectStuff();
+
+  changeLEDcolor();
   
   switch (state) {
     case notInUse:
       printTemperature();
-      changeLEDcolor();
       if (getMotionDetectorState()) {
         setNewState(useUnknown);
       }
@@ -56,10 +57,8 @@ void loop() {
       break;
     case menu:
       checkButtons();
-      changeLEDcolor();
       break;
     case triggered:
-      changeLEDcolor();
       break;
   }
 }
