@@ -1,6 +1,10 @@
 bool isInSubMenu;
 int interruptDelay = 50;
 uint8_t menuState;
+
+const uint16_t maxSprayDelay = 32000;
+const uint16_t startSpraysRemaining = 2400;
+ 
 bool scrollStateChanged;
 bool selectStateChanged;
 bool * pScrollStateChanged = &scrollStateChanged;
@@ -60,15 +64,15 @@ void checkButtons() {
   if (checkButton(buttonScroll, pScrollStateChanged)) {
     if(!isInSubMenu) {     // If we are not in a submenu, we scroll through the menu.
       menuState++;
-      if (menuState > 2) { // it wraps around
-        menuState = 0;
+      if (menuState > exitMenu) { // it wraps around
+        menuState = sprayDelayMenu;
       }
     }
     else {     // if we are in a submenu, do submenu things:
       switch (menuState) {
         case sprayDelayMenu: // raise the spray delay...
-          sprayDelay *= 2;
-          if (sprayDelay > 32000){ // max 32 second delay
+          sprayDelay += 1000;
+          if (sprayDelay > maxSprayDelay){ // max 32 second delay
             sprayDelay = 0;
           }
         break;
@@ -100,5 +104,5 @@ void checkButtons() {
 }
 
 void resetSpraysRemaining() {
-  spraysRemaining = 2400;
+  spraysRemaining = startSpraysRemaining;
 }
