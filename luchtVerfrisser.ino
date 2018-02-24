@@ -39,6 +39,7 @@ void loop() {
     doStateTransition();
     stateChanged = false;
   }
+  detectMotion();
   switch (state) {
     case notInUse:
       printTemperature();

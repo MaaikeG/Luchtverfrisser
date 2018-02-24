@@ -11,7 +11,10 @@ DallasTemperature sensors(&oneWire);
 #define maxDistance 100 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 
 NewPing sonar(trig, echo, maxDistance); // NewPing setup of pins and maximum distance.
-unsigned int lastMotionDetected;
+
+unsigned long lastMotionDetected; // last time motion was detected.
+unsigned long startMotionSerie; // start of detection of a series of motions
+unsigned long lastMotionDetection; // clockwatch variable
 
 float temperature;
 
@@ -41,17 +44,24 @@ int getDistance() {
 }
 
 void detectMotion() {
-  if (digitalRead(motion)) {
-    lastMotionDetected = millis();
-  }
+    clockWatch(500, &lastMotionDetection, [](){
+      int motionDetected = digitalRead(motion);
+      if (!motionDetected)
+      {
+        startMotionSerie = millis();
+      }
+      if (motionDetected) {
+        lastMotionDetected = millis();
+      }
+  });
 }
 
 int getLastMotionDetected() {
   return lastMotionDetected;
 }
 
-int getMagnetState() {
-  return debouncedDigitalRead(magnet);
+int getLengthMotionDetected() {
+  return millis() - startMotionSerie;;
 }
 
 
