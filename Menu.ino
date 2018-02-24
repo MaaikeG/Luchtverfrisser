@@ -1,7 +1,3 @@
-bool isInSubMenu;
-int interruptDelay = 50;
-uint8_t menuState;
-
 const uint16_t maxSprayDelay = 32000;
 const uint16_t startSpraysRemaining = 2400;
 
@@ -10,7 +6,16 @@ bool selectStateChanged;
 bool * pScrollStateChanged = &scrollStateChanged;
 bool * pSelectStateChanged = &selectStateChanged;
 
+uint8_t menuState;
+bool isInSubMenu;
+enum MenuItems {
+  sprayDelayMenu,
+  spraysRemainingMenu,
+  exitMenu
+};
+
 void showMenu() {
+  lcd.clear();
   lcd.setCursor(0, 0);
   switch (menuState) {
     case sprayDelayMenu:
@@ -44,19 +49,16 @@ void showMenu() {
 }
 
 void doManualOverride() {
-  if (millis() - lastInterruptFired > interruptDelay) {
+  if(state != triggered){
     state = triggered;
-    stateChanged = true;
-    lastInterruptFired = millis();
   }
 }
 
 void enterMenu() {
-  if (millis() - lastInterruptFired > interruptDelay) {
-    menuState = sprayDelayMenu;
+  if (state != menu) {
+    //go to the exit menu, because a scroll press will be detected and we wrap around
+    menuState = exitMenu;
     state = menu;
-    stateChanged = true;
-    lastInterruptFired = millis();
   }
 }
 
@@ -81,7 +83,7 @@ void checkButtons() {
           break;
       }
     }
-    stateChanged = true;
+    showMenu();
   }
 
   if (checkButton(buttonSelect, pSelectStateChanged)) {
@@ -99,7 +101,7 @@ void checkButtons() {
         isInSubMenu = !isInSubMenu; //... or selected the sprays remaining option.
         break;
     }
-    stateChanged = true;
+    showMenu();
   }
 }
 
