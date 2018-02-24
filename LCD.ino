@@ -12,10 +12,10 @@ void setLCD() {
   lcd.clear();
   switch (state) {
     case triggered:
-      lcd.setCursor(0,0);
+      lcd.setCursor(0, 0);
       lcd.print(F("triggered!"));
-    break;
-    case menu: 
+      break;
+    case menu:
       showMenu();
       break;
     default:
@@ -26,11 +26,11 @@ void setLCD() {
       lcd.setCursor(0, 1);
       lcd.print(F("celcius."));
       break;
-   }
+  }
 }
 
 void printTemperature() {
-    lcd.setCursor(5,0);
-    lcd.print(getTemperature()); 
+  lcd.setCursor(5, 0);
+  lcd.print(getTemperature());
 }
 

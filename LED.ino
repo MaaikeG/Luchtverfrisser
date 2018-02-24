@@ -13,29 +13,29 @@ void setupLEDs() {
 
 void setLEDColor() {
   fadeAmount = 5;
-  rgbBrightness[0] = 0; 
-  rgbBrightness[1] = 0; 
+  rgbBrightness[0] = 0;
+  rgbBrightness[1] = 0;
   rgbBrightness[2] = 0;
 
-  switch(state){
-  case useUnknown:
-    rgbBrightness[1] = 150; //green light on
-    break;
-  case type1Use:
-    rgbBrightness[0] = 255; // orange light on
-    rgbBrightness[1] = 40; // green is way brighter than red, so lower value required
-    break;
-  case type2Use:
-    rgbBrightness[0] = 255; // red light on
-    break;
-  case cleaning:
-    rgbBrightness[2] = 255; // blue light on
-    break;
-  case triggered:
-    rgbBrightness[0] = 255; // setup for disco, start with red.
-    rgbBrightness[1] = 0;
-    rgbBrightness[2] = 0;
-    break;
+  switch (state) {
+    case useUnknown:
+      rgbBrightness[1] = 150; //green light on
+      break;
+    case type1Use:
+      rgbBrightness[0] = 255; // orange light on
+      rgbBrightness[1] = 40; // green is way brighter than red, so lower value required
+      break;
+    case type2Use:
+      rgbBrightness[0] = 255; // red light on
+      break;
+    case cleaning:
+      rgbBrightness[2] = 255; // blue light on
+      break;
+    case triggered:
+      rgbBrightness[0] = 255; // setup for disco, start with red.
+      rgbBrightness[1] = 0;
+      rgbBrightness[2] = 0;
+      break;
   }
   outputLEDs();
 }
@@ -46,39 +46,39 @@ byte incColour = 1;
 void changeLEDcolor() {
   switch (state) {
     case notInUse:
-      clockWatch(50, &previousUpdateMillis, [](){
-        rgbBrightness[1] += fadeAmount;   
-        outputLEDs();     
-        if (rgbBrightness[1] <= 0 || rgbBrightness[1] >= maxBrightness){
+      clockWatch(50, &previousUpdateMillis, []() {
+        rgbBrightness[1] += fadeAmount;
+        outputLEDs();
+        if (rgbBrightness[1] <= 0 || rgbBrightness[1] >= maxBrightness) {
           fadeAmount = -fadeAmount;
         }
       });
       break;
     case menu:
-      clockWatch(500, &previousUpdateMillis, [](){
-        if (rgbBrightness[0] == 0){
+      clockWatch(500, &previousUpdateMillis, []() {
+        if (rgbBrightness[0] == 0) {
           rgbBrightness[0] = 255;
         }
         else {
           rgbBrightness[0] = 0;
         }
-        outputLEDs();     
+        outputLEDs();
       });
       break;
     case triggered: // Do the disco!
       if (rgbBrightness[incColour] >= 255) {
-          decColour++;
-          decColour = decColour % 3;
-        }
+        decColour++;
+        decColour = decColour % 3;
+      }
       incColour = decColour == 2 ? 0 : decColour + 1;
 
-      clockWatch(5, &previousUpdateMillis, [](){
+      clockWatch(5, &previousUpdateMillis, []() {
         rgbBrightness[decColour] -= fadeAmount;
         rgbBrightness[incColour] += fadeAmount;
         outputLEDs();
       });
-    break;
-  } 
+      break;
+  }
 }
 
 void outputLEDs() {

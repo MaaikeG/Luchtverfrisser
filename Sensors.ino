@@ -14,8 +14,8 @@ NewPing sonar(trig, echo, maxDistance); // NewPing setup of pins and maximum dis
 
 float temperature;
 unsigned long lastTempReading = 0;
-int tempReadDelaySeconds = 30;  
- 
+int tempReadDelaySeconds = 30;
+
 const int magnet = 19;
 const int motion = 18;
 
@@ -34,16 +34,16 @@ void setupSensors() {
 }
 
 int getTemperature() {
-   clockWatch(tempReadDelaySeconds * 1000, &lastTempReading, [](){
-     sensors.requestTemperatures(); // Send the command to get temperatures
-     temperature = sensors.getTempCByIndex(0);
+  clockWatch(tempReadDelaySeconds * 1000, &lastTempReading, []() {
+    sensors.requestTemperatures(); // Send the command to get temperatures
+    temperature = sensors.getTempCByIndex(0);
   });
   // Send the command to get temperatures
   return temperature;
 }
 
 int getDistance() {
-   Serial.print(sonar.ping_cm());
+  Serial.print(sonar.ping_cm());
 }
 
 int getMagnetState() {
