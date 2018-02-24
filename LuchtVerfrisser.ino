@@ -1,4 +1,6 @@
 const uint8_t freshenerPin = 13;
+//for testing purposes
+const uint8_t doorDistance = 75;
 
 // TODO: Save these in EEPROM!!!
 int sprayDelay = 15000; // delay in ms
@@ -34,24 +36,22 @@ void loop() {
     doStateTransition();
     stateChanged = false;
   }
-  detectStuff();
-
   changeLEDcolor();
   
   switch (state) {
     case notInUse:
       printTemperature();
-      if (getMotionDetectorState()) {
+      if (readMotionDetector() == HIGH) {
         setNewState(useUnknown);
       }
       break;
     case useUnknown:  
-      if (millis - getLastMotionDetected() > 5000 && (getDistance() > 150 || getDistance() == 0)) {
+      if (millis() - getLastMotionDetected() > 5000 && getDistance() > doorDistance) {
         setNewState(notInUse);
       }
       break;
     case cleaning:
-      if (millis - getLastMotionDetected() > 5000 && (getDistance() > 150 || getDistance() == 0)) {
+      if (millis() - getLastMotionDetected() > 5000 && getDistance() > doorDistance) {
         setNewState(notInUse);
       }
       break;

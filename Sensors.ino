@@ -9,14 +9,13 @@ DallasTemperature sensors(&oneWire);
 #define trig  16  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define echo  17  // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define maxDistance 200 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
-byte distance;
+uint8_t distance;
 
 NewPing sonar(trig, echo, maxDistance); // NewPing setup of pins and maximum distance.
 
 unsigned long lastMotionDetected; // last time motion was detected.
-unsigned long startMotionSerie; // start of detection of a series of motions
-unsigned long lastMotionDetection; // clockwatch variable
-byte motionDetectorState;
+
+unsigned long lastDistanceReading; // clockwatch variable
 
 float temperature;
 
@@ -42,33 +41,22 @@ int getTemperature() {
 }
 
 int getDistance() {
+  clockWatch(100, &lastDistanceReading, [](){
+    distance = sonar.ping_cm();
+  });
   return distance;
 }
 
-void detectStuff() {
-    clockWatch(500, &lastMotionDetection, [](){
-      motionDetectorState = digitalRead(motion);
-      if (!motionDetectorState)
-      {
-        startMotionSerie = millis();
-      }
-      if (motionDetectorState) {
-        lastMotionDetected = millis();
-      }
-      distance = sonar.ping_cm();
-  });
+int readMotionDetector(){
+  int reading = digitalRead(motion);
+  if(reading == HIGH)
+    lastMotionDetected = millis();
+  return reading;
 }
 
 int getLastMotionDetected() {
+  readMotionDetector();
   return lastMotionDetected;
-}
-
-int getLengthMotionDetected() {
-  return millis() - startMotionSerie;;
-}
-
-byte getMotionDetectorState() {
-  return motionDetectorState;
 }
 
 bool debouncedDigitalRead(int buttonPin) {
