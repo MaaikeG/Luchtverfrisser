@@ -45,7 +45,11 @@ void loop() {
       }
       break;
     case useUnknown:  
-      Serial.print(getDistance());
+      if (millis - getLastMotionDetected() > 5000 && (getDistance() > 150 || getDistance() == 0)) {
+        setNewState(notInUse);
+      }
+      break;
+    case cleaning:
       if (millis - getLastMotionDetected() > 5000 && (getDistance() > 150 || getDistance() == 0)) {
         setNewState(notInUse);
       }
