@@ -1,5 +1,3 @@
-int interruptDelay = 50;
-
 const uint16_t maxSprayDelay = 32000;
 const uint16_t startSpraysRemaining = 2400;
 
@@ -50,19 +48,17 @@ void showMenu() {
 }
 
 void doManualOverride() {
-  if (millis() - lastInterruptFired > interruptDelay) {
+  if(state != triggered){
     state = triggered;
     stateChanged = true;
-    lastInterruptFired = millis();
   }
 }
 
 void enterMenu() {
-  if (millis() - lastInterruptFired > interruptDelay && state != menu) {
+  if (state != menu) {
     menuState = sprayDelayMenu;
     state = menu;
     stateChanged = true;
-    lastInterruptFired = millis();
   }
 }
 

@@ -2,8 +2,6 @@ const uint8_t manualOverride = 2,
               buttonScroll = 3,
               buttonSelect = 15; //A1 as digital
 
-unsigned long lastInterruptFired;
-
 void setupButtons() {
   pinMode(buttonScroll, INPUT);
   pinMode(buttonSelect, INPUT);
