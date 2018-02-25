@@ -49,9 +49,9 @@ void showMenu() {
 }
 
 void doManualOverride() {
-  if(state != triggered){
-    state = triggered;
-    stateChanged = true;
+  Serial.print(state);
+  if (state != triggered) {
+    setNewState(triggered);
   }
 }
 
@@ -59,8 +59,7 @@ void enterMenu() {
   if (state != menu) {
     //go to the exit menu, because a scroll press will be detected and we wrap around
     menuState = exitMenu;
-    state = menu;
-    stateChanged = true;
+    setNewState(menu);
   }
 }
 

@@ -6,6 +6,8 @@ const uint8_t doorDistance = 75;
 int sprayDelay = 15000; // delay in ms
 uint16_t spraysRemaining = 2400;
 
+unsigned long triggeredAt;
+
 enum State {
   notInUse,
   useUnknown,
@@ -59,17 +61,28 @@ void loop() {
       checkButtons();
       break;
     case triggered:
+      if (millis() - triggeredAt >= sprayDelay){
+        spray();
+        setNewState(notInUse);
+      }
       break;
   }
 }
 void setNewState(State newState) {
   state = newState;
   stateChanged = true;
+  if (newState == triggered) {
+    triggeredAt = millis();
+  }
 }
 
 void doStateTransition() {
   setLEDColor();
   setLCD();
+}
+
+void spray() {
+  digitalWrite(freshenerPin,HIGH);
 }
 
 void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()) {
