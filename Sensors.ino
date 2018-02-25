@@ -9,23 +9,23 @@ DallasTemperature sensors(&oneWire);
 float temperature;
 
 // DISTANCE VARIABLES
-#define trig  16  // Arduino pin tied to trigger pin on the ultrasonic sensor.
-#define echo  17  // Arduino pin tied to echo pin on the ultrasonic sensor.
+#define trigger 16  // Arduino pin tied to triggerger pin on the ultrasonic sensor.
+#define echo 17  // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define maxDistance 200 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 uint8_t distance;
 unsigned long lastDistanceReading; // clockwatch variable
-NewPing sonar(trig, echo, maxDistance); // NewPing setup of pins and maximum distance.
+NewPing sonar(trigger, echo, maxDistance); // NewPing setup of pins and maximum distance.
 
 // MOTION VARIABLES
-const int motion = 18;
+#define motion 18
 unsigned long lastMotionDetected; // last time motion was detected.
 
 // MAGNET VARIABLES
-const int magnet = 19;
+#define magnet 19
 unsigned long doorLastOpen;
 
 // DEBOUNCING VARIABLES
-const uint8_t debounceDelay = 50;
+#define debounceDelay 50
 unsigned long lastDebounceTime;
 
 // BUTTON VARIABLES

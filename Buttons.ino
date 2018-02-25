@@ -1,6 +1,6 @@
-const uint8_t manualOverride = 2,
-              buttonScroll = 3,
-              buttonSelect = 15; //A1 as digital
+#define manualOverride 2
+#define buttonScroll 3
+#define buttonSelect 15 //A1 as digital
 
 void setupButtons() {
   pinMode(buttonScroll, INPUT);

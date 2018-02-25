@@ -1,4 +1,6 @@
-const uint8_t red = 9, green = 10, blue = 11;
+#define red 9
+#define green 10
+#define blue 11
 int rgbBrightness[3];
 int fadeAmount = 1;
 byte maxBrightness = 50;

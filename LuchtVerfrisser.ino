@@ -1,6 +1,6 @@
-const uint8_t freshenerPin = 13;
+#define freshener 13
 //for testing purposes
-const uint8_t doorDistance = 75;
+#define doorDistance 75
 
 // TODO: Save these in EEPROM!!!
 int sprayDelay = 15000; // delay in ms
@@ -28,7 +28,7 @@ void setup() {
   setupLCD();
   setupSensors();
   setupButtons();
-  pinMode(freshenerPin, OUTPUT);
+  pinMode(freshener, OUTPUT);
   stateChanged = true;
   getTemperature();
 }
@@ -92,7 +92,7 @@ void doStateTransition() {
 }
 
 void spray() {
-  digitalWrite(freshenerPin, HIGH);
+  digitalWrite(freshener, HIGH);
   spraysRemaining -= nSprays;
 }
 

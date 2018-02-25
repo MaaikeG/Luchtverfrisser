@@ -1,5 +1,5 @@
-const uint16_t maxSprayDelay = 32000;
-const uint16_t startSpraysRemaining = 2400;
+#define maxSprayDelay 32000
+#define startSpraysRemaining 2400
 
 bool scrollStateChanged;
 bool selectStateChanged;
