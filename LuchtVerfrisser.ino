@@ -39,7 +39,7 @@ void loop() {
     stateChanged = false;
   }
   changeLEDcolor();
-  
+
   switch (state) {
     case notInUse:
       printTemperature();
@@ -47,16 +47,16 @@ void loop() {
         setNewState(useUnknown);
       }
       break;
-    case useUnknown:  
+    case useUnknown:
       if (millis() - getLastMotionDetected() > 5000 && getDistance() > doorDistance) {
         setNewState(notInUse);
       }
       break;
     case type1Use:
     case type2Use:
-      if(readMagnet() == 1 // door is closed 
-        && millis() - getDoorCloseTime() > 2000 // was closed 2 sec ago
-        && millis() - getLastMotionDetected() > 2000) { // and no motion detected for 2 sec.
+      if (readMagnet() == 1 // door is closed
+          && millis() - getDoorCloseTime() > 2000 // was closed 2 sec ago
+          && millis() - getLastMotionDetected() > 2000) { // and no motion detected for 2 sec.
         setNewState(triggered);
       }
       break;
@@ -69,13 +69,14 @@ void loop() {
       checkButtons();
       break;
     case triggered:
-      if (millis() - triggeredAt >= sprayDelay){
+      if (millis() - triggeredAt >= sprayDelay) {
         spray();
         setNewState(notInUse);
       }
       break;
   }
 }
+
 void setNewState(State newState) {
   if (newState == triggered) {
     triggeredAt = millis();
@@ -91,8 +92,8 @@ void doStateTransition() {
 }
 
 void spray() {
-  digitalWrite(freshenerPin,HIGH);
-  spraysRemaining-= nSprays;
+  digitalWrite(freshenerPin, HIGH);
+  spraysRemaining -= nSprays;
 }
 
 void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()) {

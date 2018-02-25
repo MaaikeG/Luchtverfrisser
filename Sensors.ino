@@ -38,21 +38,21 @@ void setupSensors() {
   sensors.begin();
 }
 
-int getTemperature() { 
+int getTemperature() {
   sensors.requestTemperatures(); // Send the command to get temperatures
   return sensors.getTempCByIndex(0);
 }
 
 int getDistance() {
-  clockWatch(100, &lastDistanceReading, [](){
+  clockWatch(100, &lastDistanceReading, []() {
     distance = sonar.ping_cm();
   });
   return distance;
 }
 
-int readMotionDetector(){
+int readMotionDetector() {
   int reading = digitalRead(motion);
-  if(reading == HIGH)
+  if (reading == HIGH)
     lastMotionDetected = millis();
   return reading;
 }
