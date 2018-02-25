@@ -29,8 +29,8 @@ unsigned long doorLastOpen;
 unsigned long lastDebounceTime;
 
 // BUTTON VARIABLES
-unsigned int lastButtonStates;
-unsigned int currentButtonStates; // contains current and last states of each button.
+unsigned long lastButtonStates;
+unsigned long currentButtonStates; // contains current and last states of each button.
 // The bit on the position that is also the index of the button contains
 // the last state for that button.
 
@@ -77,11 +77,11 @@ unsigned long readMagnet() {
 
 bool debouncedDigitalRead(uint8_t buttonPin) {
   uint8_t bitPosition = buttonPin;
-  uint8_t currentState = (currentButtonStates & (1 << bitPosition)) > 0;
-  uint8_t lastState = (lastButtonStates & (1 << bitPosition)) > 0;
-
-  uint8_t reading = digitalRead(buttonPin);
-
+  uint8_t currentState = (currentButtonStates & (1UL << bitPosition)) > 0;
+  uint8_t lastState = (lastButtonStates & (1UL << bitPosition)) > 0;
+ 
+  unsigned long reading = digitalRead(buttonPin);
+  
   if (reading != lastState) {
     // reset the debouncing timer
     lastDebounceTime = millis();
@@ -97,7 +97,7 @@ bool debouncedDigitalRead(uint8_t buttonPin) {
   }
   // save reading for next time in the loop.
   lastButtonStates ^= (-reading ^ lastButtonStates) & (1UL << bitPosition);
-
+  
   return currentState;
 }
 
