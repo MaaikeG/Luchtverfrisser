@@ -13,22 +13,23 @@ float temperature;
 #define echo  17  // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define maxDistance 200 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 uint8_t distance;
+unsigned long lastDistanceReading; // clockwatch variable
 NewPing sonar(trig, echo, maxDistance); // NewPing setup of pins and maximum distance.
 
 // MOTION VARIABLES
 const int motion = 18;
 unsigned long lastMotionDetected; // last time motion was detected.
-unsigned long lastDistanceReading; // clockwatch variable
 
 // MAGNET VARIABLES
 const int magnet = 19;
 unsigned long doorClosedAt;
 uint8_t lastDoorState;
 
-
+// DEBOUNCING VARIABLES
 const uint8_t debounceDelay = 50;
 unsigned long lastDebounceTime;
 
+// BUTTON VARIABLES
 unsigned int lastButtonStates;
 unsigned int currentButtonStates; // contains current and last states of each button.
 // The bit on the position that is also the index of the button contains
