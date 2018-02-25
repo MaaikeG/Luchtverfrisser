@@ -19,7 +19,7 @@ enum State {
   menu
 };
 
-enum State state = type1Use;
+enum State state = notInUse;
 bool stateChanged;
 
 void setup() {
