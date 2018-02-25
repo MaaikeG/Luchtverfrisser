@@ -22,9 +22,10 @@ void setLCD() {
       lcd.setCursor(0, 0);
       lcd.print(F("It's "));
       lcd.print(getTemperature());
-      lcd.print(F("  degrees"));
+      lcd.print(F(" degrees"));
       lcd.setCursor(0, 1);
-      lcd.print(F("celcius."));
+      lcd.print(spraysRemaining);
+      lcd.print(" sprays left");
       break;
   }
 }
