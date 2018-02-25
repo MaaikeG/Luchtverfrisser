@@ -39,6 +39,7 @@ void loop() {
     stateChanged = false;
   }
   changeLEDcolor();
+  unsigned long lastMotionDetected = getLastMotionDetected();
 
   switch (state) {
     case notInUse:
@@ -48,7 +49,7 @@ void loop() {
       }
       break;
     case useUnknown:
-      if (millis() - getLastMotionDetected() > 5000 && getDistance() > doorDistance) {
+      if (millis() - lastMotionDetected > 5000 && getDistance() > doorDistance) {
         setNewState(notInUse);
       }
       break;
@@ -61,7 +62,7 @@ void loop() {
       }
       break;
     case cleaning:
-      if (millis() - getLastMotionDetected() > 5000 && getDistance() > doorDistance) {
+      if (millis() - lastMotionDetected > 5000 && getDistance() > doorDistance) {
         setNewState(notInUse);
       }
       break;
