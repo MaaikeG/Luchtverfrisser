@@ -92,6 +92,7 @@ void doStateTransition() {
 
 void spray() {
   digitalWrite(freshenerPin,HIGH);
+  spraysRemaining-= nSprays;
 }
 
 void clockWatch(int frequency, unsigned long* lastRunMillis, void (*f)()) {
