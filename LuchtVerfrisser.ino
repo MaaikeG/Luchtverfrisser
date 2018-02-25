@@ -7,6 +7,7 @@ int sprayDelay = 15000; // delay in ms
 uint16_t spraysRemaining = 2400;
 
 unsigned long triggeredAt;
+uint8_t nSprays;
 
 enum State {
   notInUse,
@@ -18,8 +19,7 @@ enum State {
   menu
 };
 
-enum State state = notInUse;
-//uint8_t menuState;
+enum State state = type1Use;
 bool stateChanged;
 
 void setup() {
@@ -52,6 +52,14 @@ void loop() {
         setNewState(notInUse);
       }
       break;
+    case type1Use:
+    case type2Use:
+      if(readMagnet() == 1 // door is closed 
+        && millis() - getDoorCloseTime() > 2000 // was closed 2 sec ago
+        && millis() - getLastMotionDetected() > 2000) { // and no motion detected for 2 sec.
+        setNewState(triggered);
+      }
+      break;
     case cleaning:
       if (millis() - getLastMotionDetected() > 5000 && getDistance() > doorDistance) {
         setNewState(notInUse);
@@ -69,11 +77,12 @@ void loop() {
   }
 }
 void setNewState(State newState) {
-  state = newState;
-  stateChanged = true;
   if (newState == triggered) {
     triggeredAt = millis();
+    nSprays = state == type2Use ? 2 : 1;
   }
+  state = newState;
+  stateChanged = true;
 }
 
 void doStateTransition() {

@@ -1,26 +1,29 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <NewPing.h>
-
+// TEMPERATURE VARIABLES
 #define ONE_WIRE_BUS 14 // Temperature sensor input
 OneWire oneWire(ONE_WIRE_BUS);
 DallasTemperature sensors(&oneWire);
+float temperature;
 
+// DISTANCE VARIABLES
 #define trig  16  // Arduino pin tied to trigger pin on the ultrasonic sensor.
 #define echo  17  // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define maxDistance 200 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
 uint8_t distance;
-
 NewPing sonar(trig, echo, maxDistance); // NewPing setup of pins and maximum distance.
 
+// MOTION VARIABLES
+const int motion = 18;
 unsigned long lastMotionDetected; // last time motion was detected.
-
 unsigned long lastDistanceReading; // clockwatch variable
 
-float temperature;
-
+// MAGNET VARIABLES
 const int magnet = 19;
-const int motion = 18;
+unsigned long doorClosedAt;
+uint8_t lastDoorState;
+
 
 const uint8_t debounceDelay = 50;
 unsigned long lastDebounceTime;
@@ -57,6 +60,19 @@ int readMotionDetector(){
 int getLastMotionDetected() {
   readMotionDetector();
   return lastMotionDetected;
+}
+
+unsigned long getDoorCloseTime() {
+  return doorClosedAt;
+}
+
+unsigned long readMagnet() {
+  int doorState = digitalRead(magnet);
+  if (lastDoorState == 0 && doorState == 1) {
+    doorClosedAt = millis();
+  }
+  lastDoorState = doorState;
+  return doorState;
 }
 
 bool debouncedDigitalRead(int buttonPin) {
