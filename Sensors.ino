@@ -22,8 +22,7 @@ unsigned long lastMotionDetected; // last time motion was detected.
 
 // MAGNET VARIABLES
 const int magnet = 19;
-unsigned long doorClosedAt;
-uint8_t lastDoorState;
+unsigned long doorLastOpen;
 
 // DEBOUNCING VARIABLES
 const uint8_t debounceDelay = 50;
@@ -65,15 +64,14 @@ int getLastMotionDetected() {
 }
 
 unsigned long getDoorCloseTime() {
-  return doorClosedAt;
+  return doorLastOpen;
 }
 
 unsigned long readMagnet() {
   int doorState = debouncedDigitalRead(magnet);
-  if (lastDoorState == 0 && doorState == 1) {
-    doorClosedAt = millis();
+  if (doorState == LOW) {
+    doorLastOpen = millis();
   }
-  lastDoorState = doorState;
   return doorState;
 }
 
