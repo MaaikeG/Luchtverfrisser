@@ -1,6 +1,7 @@
 #include <OneWire.h>
 #include <DallasTemperature.h>
 #include <NewPing.h>
+
 // TEMPERATURE VARIABLES
 #define ONE_WIRE_BUS 14 // Temperature sensor input
 OneWire oneWire(ONE_WIRE_BUS);
@@ -67,7 +68,7 @@ unsigned long getDoorCloseTime() {
 }
 
 unsigned long readMagnet() {
-  int doorState = digitalRead(magnet);
+  int doorState = debouncedDigitalRead(magnet);
   if (lastDoorState == 0 && doorState == 1) {
     doorClosedAt = millis();
   }
