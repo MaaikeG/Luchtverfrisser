@@ -3,7 +3,7 @@
 #define doorDistance 75
 
 // TODO: Save these in EEPROM!!!
-int sprayDelay = 15000; // delay in ms
+uint16_t sprayDelay = 15000; // delay in ms
 uint16_t spraysRemaining = 2400;
 
 unsigned long triggeredAt;

@@ -39,26 +39,26 @@ void setupSensors() {
   sensors.begin();
 }
 
-int getTemperature() {
+int8_t getTemperature() {
   sensors.requestTemperatures(); // Send the command to get temperatures
   return sensors.getTempCByIndex(0);
 }
 
-int getDistance() {
+uint8_t getDistance() {
   clockWatch(100, &lastDistanceReading, []() {
     distance = sonar.ping_cm();
   });
   return distance;
 }
 
-int readMotionDetector() {
-  int reading = digitalRead(motion);
+uint8_t readMotionDetector() {
+  uint8_t reading = digitalRead(motion);
   if (reading == HIGH)
     lastMotionDetected = millis();
   return reading;
 }
 
-int getLastMotionDetected() {
+unsigned long getLastMotionDetected() {
   readMotionDetector();
   return lastMotionDetected;
 }
@@ -68,19 +68,19 @@ unsigned long getDoorCloseTime() {
 }
 
 unsigned long readMagnet() {
-  int doorState = debouncedDigitalRead(magnet);
+  uint8_t doorState = debouncedDigitalRead(magnet);
   if (doorState == LOW) {
     doorLastOpen = millis();
   }
   return doorState;
 }
 
-bool debouncedDigitalRead(int buttonPin) {
-  int bitPosition = buttonPin;
-  int currentState = (currentButtonStates & (1 << bitPosition)) > 0;
-  int lastState = (lastButtonStates & (1 << bitPosition)) > 0;
+bool debouncedDigitalRead(uint8_t buttonPin) {
+  uint8_t bitPosition = buttonPin;
+  uint8_t currentState = (currentButtonStates & (1 << bitPosition)) > 0;
+  uint8_t lastState = (lastButtonStates & (1 << bitPosition)) > 0;
 
-  int reading = digitalRead(buttonPin);
+  uint8_t reading = digitalRead(buttonPin);
 
   if (reading != lastState) {
     // reset the debouncing timer

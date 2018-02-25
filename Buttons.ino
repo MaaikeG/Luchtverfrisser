@@ -10,8 +10,8 @@ void setupButtons() {
   attachInterrupt(digitalPinToInterrupt(buttonScroll), enterMenu, FALLING);
 }
 
-bool checkButton(int button, bool * pButtonStateChanged) {
-  int buttonState = debouncedDigitalRead(button);
+bool checkButton(uint8_t button, bool * pButtonStateChanged) {
+  uint8_t buttonState = debouncedDigitalRead(button);
 
   if (buttonState == LOW && *pButtonStateChanged) {
     *pButtonStateChanged = false;

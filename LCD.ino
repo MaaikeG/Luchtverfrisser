@@ -2,7 +2,7 @@
 LiquidCrystal lcd(8, 12, 4, 5, 6, 7);
 
 unsigned long lastTempReading;
-unsigned int tempReadDelaySeconds = 30;
+#define tempRefreshSeconds 30
 
 void setupLCD() {
   lcd.begin(16, 2);
@@ -30,7 +30,7 @@ void setLCD() {
 }
 
 void printTemperature() {
-  clockWatch(tempReadDelaySeconds * 1000, &lastTempReading, []() {
+  clockWatch(tempRefreshSeconds * 1000, &lastTempReading, []() {
     lcd.setCursor(5, 0);
     lcd.print(getTemperature());
   });
