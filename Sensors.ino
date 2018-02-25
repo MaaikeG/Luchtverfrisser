@@ -37,6 +37,7 @@ unsigned long currentButtonStates; // contains current and last states of each b
 
 void setupSensors() {
   sensors.begin();
+  sensors.setResolution(0, 9);
 }
 
 int8_t getTemperature() {

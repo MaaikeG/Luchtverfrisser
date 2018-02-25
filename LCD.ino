@@ -2,7 +2,7 @@
 LiquidCrystal lcd(8, 12, 4, 5, 6, 7);
 
 unsigned long lastTempReading;
-#define tempRefreshSeconds 30
+#define tempRefreshSeconds 2
 
 void setupLCD() {
   lcd.begin(16, 2);

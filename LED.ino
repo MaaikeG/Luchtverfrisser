@@ -48,12 +48,9 @@ byte incColour = 1;
 void changeLEDcolor() {
   switch (state) {
     case notInUse:
-      clockWatch(50, &previousUpdateMillis, []() {
-        rgbBrightness[1] += fadeAmount;
+      clockWatch(1000, &previousUpdateMillis, []() {
+        rgbBrightness[1] = rgbBrightness[1] == 0 ? maxBrightness : 0;
         outputLEDs();
-        if (rgbBrightness[1] <= 0 || rgbBrightness[1] >= maxBrightness) {
-          fadeAmount = -fadeAmount;
-        }
       });
       break;
     case menu:
