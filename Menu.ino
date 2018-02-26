@@ -75,7 +75,7 @@ void showMenu() {
 
 void doManualOverride() {
   if (state != triggered) {
-    trigger(nSpraysUse1);
+    trigger(1);
   }
 }
 
