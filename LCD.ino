@@ -14,6 +14,9 @@ void setLCD() {
     case triggered:
       lcd.setCursor(0, 0);
       lcd.print(F("triggered!"));
+      lcd.setCursor(0,1);
+      lcd.print(nSprays); 
+      lcd.print(" spray(s)!");
       break;
     case menu:
       showMenu();

@@ -51,7 +51,7 @@ void showMenu() {
 void doManualOverride() {
   Serial.print(state);
   if (state != triggered) {
-    setNewState(triggered);
+    trigger(2);
   }
 }
 
