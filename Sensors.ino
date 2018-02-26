@@ -21,7 +21,7 @@ NewPing sonar(trigger, echo, maxDistance); // NewPing setup of pins and maximum 
 unsigned long lastMotionDetected; // last time motion was detected.
 
 // MAGNET VARIABLES
-#define magnet 19
+#define magnet A5
 unsigned long doorLastOpen;
 
 // DEBOUNCING VARIABLES
@@ -69,19 +69,35 @@ unsigned long getDoorCloseTime() {
 }
 
 unsigned long readMagnet() {
-  uint8_t doorState = debouncedDigitalRead(magnet);
+  uint8_t doorState = debouncedAnalogRead(magnet, 1);
   if (doorState == LOW) {
     doorLastOpen = millis();
   }
   return doorState;
 }
 
+bool debouncedAnalogRead(uint8_t buttonPin, uint8_t ladderPosition) {
+  unsigned long reading = analogRead(buttonPin);
+  int digitalReading;
+  switch (ladderPosition) {
+    case 0: 
+      digitalReading = (reading < 50) ? 1UL : 0;
+      break;
+    case 1:
+      digitalReading = (reading > 400 && reading < 600) ? 1UL : 0;
+      break;
+  }
+  return debounce(buttonPin + ladderPosition, digitalReading);
+}
+
 bool debouncedDigitalRead(uint8_t buttonPin) {
+  return debounce(buttonPin, digitalRead(buttonPin));
+}
+
+bool debounce (uint8_t buttonPin, unsigned long reading) {
   uint8_t bitPosition = buttonPin;
   uint8_t currentState = (currentButtonStates & (1UL << bitPosition)) > 0;
   uint8_t lastState = (lastButtonStates & (1UL << bitPosition)) > 0;
- 
-  unsigned long reading = digitalRead(buttonPin);
   
   if (reading != lastState) {
     // reset the debouncing timer

@@ -51,7 +51,7 @@ void showMenu() {
 void doManualOverride() {
   Serial.print(state);
   if (state != triggered) {
-    trigger(2);
+    trigger(1);
   }
 }
 
@@ -70,7 +70,7 @@ void doExitMenu() {
 }
 
 void checkButtons() {
-  if (checkButton(buttonScroll, pScrollStateChanged)) {
+  if (checkButton(debouncedDigitalRead(buttonScroll), pScrollStateChanged)) {
     if (!isInSubMenu) {    // If we are not in a submenu, we scroll through the menu.
       menuState++;
       if (menuState > exitMenu) { // it wraps around
@@ -93,7 +93,7 @@ void checkButtons() {
     stateChanged = true;
   }
 
-  if (checkButton(buttonSelect, pSelectStateChanged)) {
+  if (checkButton(debouncedAnalogRead(buttonSelect, 0), pSelectStateChanged)) {
     switch (menuState) {
       case exitMenu: // exit selected, get back out of menu.
         doExitMenu();

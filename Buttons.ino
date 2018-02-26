@@ -1,6 +1,6 @@
 #define manualOverride 2
 #define buttonScroll 3
-#define buttonSelect 15 //A1 as digital
+#define buttonSelect A5 //A5 is shared with magnet sensor
 
 void setupButtons() {
   pinMode(buttonScroll, INPUT);
@@ -11,7 +11,7 @@ void setupButtons() {
 
 void attachInterrupts() {
   attachInterrupt(digitalPinToInterrupt(manualOverride), doManualOverride, FALLING);
-  attachInterrupt(digitalPinToInterrupt(buttonScroll), enterMenu, FALLING);
+  attachInterrupt(digitalPinToInterrupt(buttonScroll), enterMenu, RISING);
 }
 
 void detachInterrupts() {
@@ -19,14 +19,12 @@ void detachInterrupts() {
   detachInterrupt(digitalPinToInterrupt(buttonScroll));
 }
 
-bool checkButton(uint8_t button, bool * pButtonStateChanged) {
-  uint8_t buttonState = debouncedDigitalRead(button);
-
-  if (buttonState == LOW && *pButtonStateChanged) {
+bool checkButton(uint8_t buttonState, bool * pButtonStateChanged) {
+  if (buttonState == HIGH && *pButtonStateChanged) {
     *pButtonStateChanged = false;
     return true;
   }
-  if (buttonState == HIGH) {
+  if (buttonState == LOW) {
     *pButtonStateChanged = true;
   }
   return false;
