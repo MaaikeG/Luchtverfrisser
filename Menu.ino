@@ -8,9 +8,12 @@ bool * pSelectStateChanged = &selectStateChanged;
 
 uint8_t menuState;
 bool isInSubMenu;
+
 enum MenuItems {
   sprayDelayMenu,
   spraysRemainingMenu,
+  sprayAmountType1Use,
+  sprayAmountType2Use,
   exitMenu
 };
 
@@ -42,6 +45,28 @@ void showMenu() {
         lcd.print(spraysRemaining);
       }
       break;
+    case sprayAmountType1Use:
+      if (isInSubMenu) {
+        lcd.print(F("Change sprays"));
+      }
+      else {
+        lcd.print(F("Sprays for a"));
+      }
+      lcd.setCursor(0, 1);
+      lcd.print(F("number 1: "));
+      lcd.print(nSpraysUse1);
+      break;
+    case sprayAmountType2Use:
+      if (isInSubMenu) {
+        lcd.print(F("Change sprays"));
+      }
+      else {
+        lcd.print(F("Sprays for a"));
+      }
+      lcd.setCursor(0, 1);
+      lcd.print(F("number 1: "));
+      lcd.print(nSpraysUse2);
+      break;
     case exitMenu:
       lcd.print(F("Exit"));
       break;
@@ -49,9 +74,8 @@ void showMenu() {
 }
 
 void doManualOverride() {
-  Serial.print(state);
   if (state != triggered) {
-    trigger(1);
+    trigger(nSpraysUse1);
   }
 }
 
@@ -88,6 +112,12 @@ void checkButtons() {
         case spraysRemainingMenu: // Or cancel a reset
           isInSubMenu = !isInSubMenu;
           break;
+        case sprayAmountType1Use: // raise the spray delay...
+          increaseNSprays(&nSpraysUse1);
+          break;
+        case sprayAmountType2Use:
+          increaseNSprays(&nSpraysUse2);
+          break;
       }
     }
     stateChanged = true;
@@ -98,14 +128,14 @@ void checkButtons() {
       case exitMenu: // exit selected, get back out of menu.
         doExitMenu();
         break;
-      case sprayDelayMenu:  //right spray delay selected by user, or selected to go into submenu.
-        isInSubMenu = !isInSubMenu;
-        break;
       case spraysRemainingMenu:
         if (isInSubMenu) { // user selected to do a reset
           resetSpraysRemaining();
         }
         isInSubMenu = !isInSubMenu; //... or selected the sprays remaining option.
+        break;
+      default:
+        isInSubMenu = !isInSubMenu;
         break;
     }
     stateChanged = true;
@@ -115,3 +145,11 @@ void checkButtons() {
 void resetSpraysRemaining() {
   spraysRemaining = startSpraysRemaining;
 }
+
+void increaseNSprays(uint8_t * nSprays) {
+  *nSprays += 1;
+  if (*nSprays > 5) { // max 5 sprays
+    *nSprays = 0;
+  }
+}
+

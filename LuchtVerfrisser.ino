@@ -9,7 +9,12 @@ uint16_t spraysRemaining = 2400;
 unsigned long triggeredAt;
 unsigned long sprayInterval;
 uint8_t spraying;
+// number of sprays imminent
 uint8_t nSprays;
+
+// Number of times to spray for number 1 or number 2
+uint8_t nSpraysUse1 = 1;
+uint8_t nSpraysUse2 = 2;
 
 enum State {
   notInUse,
@@ -60,7 +65,7 @@ void loop() {
       if (readMagnet() == 1 // door is closed
           && millis() - getDoorCloseTime() > 2000 // was closed 2 sec ago
           && millis() - getLastMotionDetected() > 2000) { // and no motion detected for 2 sec.
-        trigger(state == type1Use ? 1 : 2);
+        trigger(state == type1Use ? nSpraysUse1 : nSpraysUse2);
       }
       break;
     case cleaning:
