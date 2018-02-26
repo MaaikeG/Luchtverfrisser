@@ -6,8 +6,17 @@ void setupButtons() {
   pinMode(buttonScroll, INPUT);
   pinMode(buttonSelect, INPUT);
   pinMode(manualOverride, INPUT);
+  attachInterrupts();
+}
+
+void attachInterrupts() {
   attachInterrupt(digitalPinToInterrupt(manualOverride), doManualOverride, FALLING);
   attachInterrupt(digitalPinToInterrupt(buttonScroll), enterMenu, FALLING);
+}
+
+void detachInterrupts() {
+  detachInterrupt(digitalPinToInterrupt(manualOverride));
+  detachInterrupt(digitalPinToInterrupt(buttonScroll));
 }
 
 bool checkButton(uint8_t button, bool * pButtonStateChanged) {

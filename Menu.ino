@@ -59,8 +59,14 @@ void enterMenu() {
   if (state != menu) {
     //go to the exit menu, because a scroll press will be detected and we wrap around
     menuState = exitMenu;
+    detachInterrupts();
     setNewState(menu);
   }
+}
+
+void doExitMenu() {
+  attachInterrupts();
+  setNewState(notInUse);
 }
 
 void checkButtons() {
@@ -90,7 +96,7 @@ void checkButtons() {
   if (checkButton(buttonSelect, pSelectStateChanged)) {
     switch (menuState) {
       case exitMenu: // exit selected, get back out of menu.
-        state = notInUse;
+        doExitMenu();
         break;
       case sprayDelayMenu:  //right spray delay selected by user, or selected to go into submenu.
         isInSubMenu = !isInSubMenu;
