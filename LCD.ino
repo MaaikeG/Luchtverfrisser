@@ -1,7 +1,7 @@
 #include <LiquidCrystal.h>
 LiquidCrystal lcd(8, 12, 4, 5, 6, 7);
 
-unsigned long lastTempReading;
+unsigned long lastDisplayChange;
 #define tempRefreshSeconds 2
 
 void setupLCD() {
@@ -13,7 +13,8 @@ void setLCD() {
   switch (state) {
     case triggered:
       lcd.setCursor(0, 0);
-      lcd.print(F("triggered!"));
+      lcd.print(F("Spraying in "));
+      printCountDown();
       lcd.setCursor(0,1);
       lcd.print(nSprays); 
       lcd.print(" spray(s)!");
@@ -34,9 +35,22 @@ void setLCD() {
 }
 
 void printTemperature() {
-  clockWatch(tempRefreshSeconds * 1000, &lastTempReading, []() {
+  clockWatch(tempRefreshSeconds * 1000, &lastDisplayChange, []() {
     lcd.setCursor(5, 0);
     lcd.print(getTemperature());
   });
 }
 
+void printTriggerCountDown() {
+  clockWatch(1000, &lastDisplayChange, []() {
+    printCountDown();
+  });
+}
+
+void printCountDown() {
+  lcd.setCursor(12,0);
+  int timeLeft = (sprayDelay - (millis() - triggeredAt))/1000;
+  timeLeft = timeLeft < 0? 0 : timeLeft;
+  lcd.print(timeLeft);
+}
+    

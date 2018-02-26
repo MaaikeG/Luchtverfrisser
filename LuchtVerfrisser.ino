@@ -72,6 +72,7 @@ void loop() {
       checkButtons();
       break;
     case triggered:
+      printTriggerCountDown();
       if (nSprays <= 0) {
         Serial.println("Done!");
         setNewState(notInUse);
