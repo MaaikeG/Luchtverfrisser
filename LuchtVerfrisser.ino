@@ -2,6 +2,9 @@
 //for testing purposes
 #define doorDistance 75
 #define cleaningDelay 5000
+#define minType1Distance 40 
+#define maxType1Distance 70 
+#define type1Delay 3000
 
 // TODO: Save these in EEPROM!!!
 uint16_t sprayDelay = 3000; // delay in ms
@@ -16,6 +19,8 @@ uint8_t nSprays;
 // Number of times to spray for number 1 or number 2
 uint8_t nSpraysUse1 = 1;
 uint8_t nSpraysUse2 = 2;
+
+unsigned long enteredType1Distance;
 
 enum State {
   notInUse,
@@ -59,8 +64,13 @@ void loop() {
       }
       break;
     case useUnknown:
+      if((getDistance() < minType1Distance || getDistance() > maxType1Distance) && getDistance() != 0){
+        enteredType1Distance = millis();
+      }
       if (millis() - lastMotionDetected > 5000 && getDistance() > doorDistance) {
         setNewState(notInUse);
+      }else if(millis() - enteredType1Distance > type1Delay && magnetReading == HIGH){
+        setNewState(type1Use);
       }else if(millis() - lastMotionDetected > cleaningDelay && magnetReading == LOW){
         setNewState(cleaning);
       }
