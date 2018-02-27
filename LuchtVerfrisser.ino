@@ -1,6 +1,10 @@
+#include <EEPROM.h>
+
 #define freshener 13
+
 //for testing purposes
 #define doorDistance 75
+
 #define cleaningDelay 20000
 #define minType1Distance 40
 #define maxType1Distance 70
@@ -9,9 +13,11 @@
 #define maxType2Distance 30
 #define type2Delay 5000
 
-// TODO: Save these in EEPROM!!!
 uint16_t sprayDelay = 3000; // delay in ms
-uint16_t spraysRemaining = 2400;
+#define spraysRemainingAddress  0
+#define emptyEepromValue 65535
+#define startSpraysRemaining 2400
+uint16_t spraysRemaining;
 
 unsigned long triggeredAt;
 unsigned long sprayInterval;
@@ -50,6 +56,13 @@ void setup() {
   pinMode(freshener, OUTPUT);
   stateChanged = true;
   getTemperature();
+  while (!Serial) {
+    ; // wait for serial port to connect. Needed for native USB port only
+  }
+  EEPROM.get(spraysRemainingAddress, spraysRemaining);
+  if(spraysRemaining == emptyEepromValue){
+    resetSpraysRemaining();
+  }
 }
 
 void loop() {
@@ -146,9 +159,18 @@ void spray() {
       digitalWrite(freshener, LOW);
       spraying = false;
       nSprays -= 1;
-      spraysRemaining -= 1;
+      setSpraysRemaining(spraysRemaining - 1);
     }
   });
+}
+
+void resetSpraysRemaining() {
+  setSpraysRemaining(startSpraysRemaining);
+}
+
+void setSpraysRemaining(uint16_t newSpraysRemaining){
+  spraysRemaining = newSpraysRemaining;
+  EEPROM.put(spraysRemainingAddress, spraysRemaining);
 }
 
 void clockWatch(int frequency, unsigned long * lastRunMillis, void (*f)()) {

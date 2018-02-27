@@ -1,5 +1,4 @@
 #define maxSprayDelay 32000
-#define startSpraysRemaining 2400
 
 bool scrollStateChanged;
 bool selectStateChanged;
@@ -140,10 +139,6 @@ void checkButtons() {
     }
     stateChanged = true;
   }
-}
-
-void resetSpraysRemaining() {
-  spraysRemaining = startSpraysRemaining;
 }
 
 void increaseNSprays(uint8_t * nSprays) {
