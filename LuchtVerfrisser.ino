@@ -1,6 +1,7 @@
 #define freshener 13
 //for testing purposes
 #define doorDistance 75
+#define cleaningDelay 5000
 
 // TODO: Save these in EEPROM!!!
 uint16_t sprayDelay = 3000; // delay in ms
@@ -56,8 +57,11 @@ void loop() {
       }
       break;
     case useUnknown:
+      Serial.println(getLastMotionDetected());
       if (millis() - lastMotionDetected > 5000 && getDistance() > doorDistance) {
         setNewState(notInUse);
+      }else if(millis() - getLastMotionDetected() > cleaningDelay){
+        setNewState(cleaning);
       }
       break;
     case type1Use:
