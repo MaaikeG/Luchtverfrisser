@@ -2,11 +2,11 @@
 //for testing purposes
 #define doorDistance 75
 #define cleaningDelay 20000
-#define minType1Distance 40 
-#define maxType1Distance 70 
+#define minType1Distance 40
+#define maxType1Distance 70
 #define type1Delay 3000
-#define minType2Distance 10 
-#define maxType2Distance 30 
+#define minType2Distance 10
+#define maxType2Distance 30
 #define type2Delay 5000
 
 // TODO: Save these in EEPROM!!!
@@ -25,6 +25,8 @@ uint8_t nSpraysUse2 = 2;
 
 unsigned long enteredType1Distance;
 unsigned long enteredType2Distance;
+
+uint8_t doorOpenSinceStateChange;
 
 enum State {
   notInUse,
@@ -68,25 +70,29 @@ void loop() {
       }
       break;
     case useUnknown:
-      if((getDistance() < minType1Distance || getDistance() > maxType1Distance) && getDistance() != 0){
+      if ((getDistance() < minType1Distance || getDistance() > maxType1Distance) && getDistance() != 0) {
         enteredType1Distance = millis();
       }
-      if((getDistance() < minType2Distance || getDistance() > maxType2Distance) && getDistance() != 0){
+      if ((getDistance() < minType2Distance || getDistance() > maxType2Distance) && getDistance() != 0) {
         enteredType2Distance = millis();
       }
       if (millis() - lastMotionDetected > 5000 && getDistance() > doorDistance) {
         setNewState(notInUse);
-      }else if(millis() - enteredType1Distance > type1Delay && magnetReading == HIGH){
+      } else if (millis() - enteredType1Distance > type1Delay && magnetReading == HIGH) {
         setNewState(type1Use);
-      }else if(millis() - enteredType2Distance > type2Delay && magnetReading == HIGH){
+      } else if (millis() - enteredType2Distance > type2Delay && magnetReading == HIGH) {
         setNewState(type2Use);
-      }else if(millis() - lastMotionDetected > cleaningDelay && magnetReading == LOW){
+      } else if (millis() - lastMotionDetected > cleaningDelay && magnetReading == LOW) {
         setNewState(cleaning);
       }
       break;
     case type1Use:
     case type2Use:
-      if (readMagnet() == 1 // door is closed
+      if (readMagnet() == 0) {
+        doorOpenSinceStateChange = true;
+      }
+      if (doorOpenSinceStateChange //door has been opened
+          && readMagnet() == 1 // door is now closed again
           && millis() - getDoorCloseTime() > 2000 // was closed 2 sec ago
           && millis() - lastMotionDetected > 2000) { // and no motion detected for 2 sec.
         trigger(state == type1Use ? nSpraysUse1 : nSpraysUse2);
@@ -117,6 +123,7 @@ void trigger(int _nSprays) {
   triggeredAt = millis();
   nSprays = _nSprays;
   setNewState(triggered);
+  doorOpenSinceStateChange = false;
 }
 
 void setNewState(State newState) {
