@@ -34,6 +34,7 @@ uint8_t nSprays;
 // Number of times to spray for number 1 or number 2
 uint8_t nSpraysUse1 = 1;
 uint8_t nSpraysUse2 = 2;
+uint8_t nSpraysOverride = 1;
 
 unsigned long enteredType1Distance;
 unsigned long enteredType2Distance;

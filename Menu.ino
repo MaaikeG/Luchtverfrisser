@@ -14,6 +14,7 @@ enum MenuItems {
   spraysRemainingMenu,
   sprayAmountType1Use,
   sprayAmountType2Use,
+  sprayAmountOverride,
   exitMenu
 };
 
@@ -46,26 +47,13 @@ void showMenu() {
       }
       break;
     case sprayAmountType1Use:
-      if (isInSubMenu) {
-        lcd.print(F("Change sprays"));
-      }
-      else {
-        lcd.print(F("Sprays for a"));
-      }
-      lcd.setCursor(0, 1);
-      lcd.print(F("number 1: "));
-      lcd.print(nSpraysUse1);
+      printSprayAmount(nSpraysUse1, "number 1: ");
       break;
     case sprayAmountType2Use:
-      if (isInSubMenu) {
-        lcd.print(F("Change sprays"));
-      }
-      else {
-        lcd.print(F("Sprays for a"));
-      }
-      lcd.setCursor(0, 1);
-      lcd.print(F("number 1: "));
-      lcd.print(nSpraysUse2);
+      printSprayAmount(nSpraysUse2, "number 2: ");
+      break;
+    case sprayAmountOverride:
+      printSprayAmount(nSpraysOverride, "manual spray: ");
       break;
     case exitMenu:
       lcd.print(F("Exit"));
@@ -75,7 +63,7 @@ void showMenu() {
 
 void doManualOverride() {
   if (state != triggered) {
-    trigger(1);
+    trigger(nSpraysOverride);
   }
 }
 
@@ -86,6 +74,18 @@ void enterMenu() {
     detachInterrupts();
     setNewState(menu);
   }
+}
+
+void printSprayAmount(uint8_t nSprays, String lcdText){
+  if (isInSubMenu) {
+    lcd.print(F("Change sprays"));
+  }
+  else {
+    lcd.print(F("Sprays for a"));
+  }
+  lcd.setCursor(0, 1);
+  lcd.print(lcdText);
+  lcd.print(nSprays);
 }
 
 void doExitMenu() {
@@ -117,6 +117,9 @@ void checkButtons() {
           break;
         case sprayAmountType2Use:
           increaseNSprays(&nSpraysUse2);
+          break;
+        case sprayAmountOverride:
+          increaseNSprays(&nSpraysOverride);
           break;
       }
     }
