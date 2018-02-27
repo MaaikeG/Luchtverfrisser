@@ -47,7 +47,9 @@ void loop() {
     stateChanged = false;
   }
   changeLEDcolor();
+  // i don't understand why, but these can't be in the cases below
   unsigned long lastMotionDetected = getLastMotionDetected();
+  uint8_t magnetReading = readMagnet();
 
   switch (state) {
     case notInUse:
@@ -57,10 +59,9 @@ void loop() {
       }
       break;
     case useUnknown:
-      Serial.println(getLastMotionDetected());
       if (millis() - lastMotionDetected > 5000 && getDistance() > doorDistance) {
         setNewState(notInUse);
-      }else if(millis() - getLastMotionDetected() > cleaningDelay){
+      }else if(millis() - lastMotionDetected > cleaningDelay && magnetReading == LOW){
         setNewState(cleaning);
       }
       break;
@@ -68,7 +69,7 @@ void loop() {
     case type2Use:
       if (readMagnet() == 1 // door is closed
           && millis() - getDoorCloseTime() > 2000 // was closed 2 sec ago
-          && millis() - getLastMotionDetected() > 2000) { // and no motion detected for 2 sec.
+          && millis() - lastMotionDetected > 2000) { // and no motion detected for 2 sec.
         trigger(state == type1Use ? nSpraysUse1 : nSpraysUse2);
       }
       break;
