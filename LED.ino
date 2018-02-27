@@ -1,6 +1,6 @@
 #define red 9
 #define green 10
-#define blue 11
+#define blue 6
 uint8_t rgbBrightness[3];
 uint8_t fadeAmount = 1;
 uint8_t  maxBrightness = 50;

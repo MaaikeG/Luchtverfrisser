@@ -1,5 +1,5 @@
 #include <LiquidCrystal.h>
-LiquidCrystal lcd(8, 12, 4, 5, 6, 7);
+LiquidCrystal lcd(8, 12, 4, 5, 11, 7);
 
 unsigned long lastDisplayChange;
 #define tempRefreshSeconds 2
