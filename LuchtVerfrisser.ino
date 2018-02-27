@@ -1,7 +1,7 @@
 #define freshener 13
 //for testing purposes
 #define doorDistance 75
-#define cleaningDelay 5000
+#define cleaningDelay 20000
 #define minType1Distance 40 
 #define maxType1Distance 70 
 #define type1Delay 3000
