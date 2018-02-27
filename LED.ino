@@ -3,7 +3,12 @@
 #define blue 6
 uint8_t rgbBrightness[3];
 uint8_t fadeAmount = 1;
-uint8_t  maxBrightness = 50;
+
+#define maxGreenBrightness 100
+
+#define notInUseBlinkDelay 1000
+#define menuBlinkDelay 500
+#define triggeredUpdateDelay 5
 
 unsigned long previousUpdateMillis;
 
@@ -21,7 +26,7 @@ void setLEDColor() {
 
   switch (state) {
     case useUnknown:
-      rgbBrightness[1] = 150; //green light on
+      rgbBrightness[1] = maxGreenBrightness; //green light on
       break;
     case type1Use:
       rgbBrightness[0] = 255; // orange light on
@@ -48,13 +53,13 @@ byte incColour = 1;
 void changeLEDcolor() {
   switch (state) {
     case notInUse:
-      clockWatch(1000, &previousUpdateMillis, []() {
-        rgbBrightness[1] = rgbBrightness[1] == 0 ? maxBrightness : 0;
+      clockWatch(notInUseBlinkDelay, &previousUpdateMillis, []() {
+        rgbBrightness[1] = rgbBrightness[1] == 0 ? maxGreenBrightness : 0;
         outputLEDs();
       });
       break;
     case menu:
-      clockWatch(500, &previousUpdateMillis, []() {
+      clockWatch(menuBlinkDelay, &previousUpdateMillis, []() {
         if (rgbBrightness[0] == 0) {
           rgbBrightness[0] = 255;
         }
@@ -71,7 +76,7 @@ void changeLEDcolor() {
       }
       incColour = decColour == 2 ? 0 : decColour + 1;
 
-      clockWatch(5, &previousUpdateMillis, []() {
+      clockWatch(triggeredUpdateDelay, &previousUpdateMillis, []() {
         rgbBrightness[decColour] -= fadeAmount;
         rgbBrightness[incColour] += fadeAmount;
         outputLEDs();

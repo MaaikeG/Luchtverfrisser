@@ -34,6 +34,9 @@ unsigned long currentButtonStates; // contains current and last states of each b
 // The bit on the position that is also the index of the button contains
 // the last state for that button.
 
+#define maxLadderPosition0Voltage 50
+#define minLadderPosition1Voltage 400
+#define maxLadderPosition1Voltage 600
 
 void setupSensors() {
   sensors.begin();
@@ -81,10 +84,10 @@ bool debouncedAnalogRead(uint8_t buttonPin, uint8_t ladderPosition) {
   int digitalReading;
   switch (ladderPosition) {
     case 0: 
-      digitalReading = (reading < 50) ? 1UL : 0;
+      digitalReading = (reading < maxLadderPosition0Voltage) ? 1UL : 0;
       break;
     case 1:
-      digitalReading = (reading > 400 && reading < 600) ? 1UL : 0;
+      digitalReading = (reading > minLadderPosition1Voltage && reading < maxLadderPosition1Voltage) ? 1UL : 0;
       break;
   }
   return debounce(buttonPin + ladderPosition, digitalReading);

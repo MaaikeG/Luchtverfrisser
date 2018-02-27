@@ -6,14 +6,20 @@
 #define doorDistance 75
 
 #define cleaningDelay 20000
-#define minType1Distance 40
-#define maxType1Distance 70
+
+#define notInUseDelay 5000
+
+#define minType1Distance 40 
+#define maxType1Distance 70 
 #define type1Delay 3000
-#define minType2Distance 10
-#define maxType2Distance 30
+
+#define minType2Distance 10 
+#define maxType2Distance 30 
 #define type2Delay 5000
 
 uint16_t sprayDelay = 3000; // delay in ms
+#define freshenerOnTime 750
+
 #define spraysRemainingAddress  0
 #define emptyEepromValue 65535
 #define startSpraysRemaining 2400
@@ -89,7 +95,7 @@ void loop() {
       if ((getDistance() < minType2Distance || getDistance() > maxType2Distance) && getDistance() != 0) {
         enteredType2Distance = millis();
       }
-      if (millis() - lastMotionDetected > 5000 && getDistance() > doorDistance) {
+      if (millis() - lastMotionDetected > notInUseDelay && getDistance() > doorDistance) {
         setNewState(notInUse);
       } else if (millis() - enteredType1Distance > type1Delay && magnetReading == HIGH) {
         setNewState(type1Use);
@@ -105,14 +111,14 @@ void loop() {
         doorOpenSinceStateChange = true;
       }
       if (doorOpenSinceStateChange //door has been opened
-          && readMagnet() == 1 // door is now closed again
+          && readMagnet() == HIGH // door is now closed again
           && millis() - getDoorCloseTime() > 2000 // was closed 2 sec ago
           && millis() - lastMotionDetected > 2000) { // and no motion detected for 2 sec.
         trigger(state == type1Use ? nSpraysUse1 : nSpraysUse2);
       }
       break;
     case cleaning:
-      if (millis() - lastMotionDetected > 5000 && getDistance() > doorDistance) {
+      if (millis() - lastMotionDetected > notInUseDelay && getDistance() > doorDistance) {
         setNewState(notInUse);
       }
       break;
@@ -150,7 +156,7 @@ void doStateTransition() {
 }
 
 void spray() {
-  clockWatch(750, &sprayInterval, []() {
+  clockWatch(freshenerOnTime, &sprayInterval, []() {
     if (!spraying) {
       spraying = true;
       digitalWrite(freshener, HIGH);

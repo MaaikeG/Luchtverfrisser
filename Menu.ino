@@ -1,4 +1,5 @@
 #define maxSprayDelay 32000
+#define maxNumberOfSprays 5
 
 bool scrollStateChanged;
 bool selectStateChanged;
@@ -104,7 +105,7 @@ void checkButtons() {
       switch (menuState) {
         case sprayDelayMenu: // raise the spray delay...
           sprayDelay += 1000;
-          if (sprayDelay > maxSprayDelay) { // max 32 second delay
+          if (sprayDelay > maxSprayDelay) {
             sprayDelay = 0;
           }
           break;
@@ -143,7 +144,7 @@ void checkButtons() {
 
 void increaseNSprays(uint8_t * nSprays) {
   *nSprays += 1;
-  if (*nSprays > 5) { // max 5 sprays
+  if (*nSprays > maxNumberOfSprays) {
     *nSprays = 0;
   }
 }
