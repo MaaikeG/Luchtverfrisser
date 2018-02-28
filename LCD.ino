@@ -42,9 +42,7 @@ void printTemperature() {
 }
 
 void printTriggerCountDown() {
-  clockWatch(1000, &lastDisplayChange, []() {
-    printCountDown();
-  });
+  clockWatch(1000, &lastDisplayChange, printCountDown);
 }
 
 void printCountDown() {
