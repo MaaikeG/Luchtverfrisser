@@ -9,11 +9,9 @@
 
 #define notInUseDelay 5000
 
-#define minType1Distance 40 
 #define maxType1Distance 70 
 #define type1Delay 3000
 
-#define minType2Distance 10 
 #define maxType2Distance 30 
 #define type2Delay 5000
 
@@ -81,6 +79,7 @@ void loop() {
   // i don't understand why, but these can't be in the cases below
   unsigned long lastMotionDetected = getLastMotionDetected();
   uint8_t magnetReading = readMagnet();
+  getDistance();
 
   switch (state) {
     case notInUse:
@@ -90,25 +89,26 @@ void loop() {
       }
       break;
     case useUnknown:
-      if ((getDistance() < minType1Distance || getDistance() > maxType1Distance) && getDistance() != 0) {
+      if (getDistance() > maxType1Distance && getDistance() != 0) {
         enteredType1Distance = millis();
-      }
-      if ((getDistance() < minType2Distance || getDistance() > maxType2Distance) && getDistance() != 0) {
-        enteredType2Distance = millis();
       }
       if (millis() - lastMotionDetected > notInUseDelay && getDistance() > doorDistance) {
         setNewState(notInUse);
       } else if (millis() - enteredType1Distance > type1Delay && magnetReading == HIGH) {
         setNewState(type1Use);
-      } else if (millis() - enteredType2Distance > type2Delay && magnetReading == HIGH) {
-        setNewState(type2Use);
       } else if (millis() - lastMotionDetected > cleaningDelay && magnetReading == LOW) {
         setNewState(cleaning);
       }
       break;
     case type1Use:
+      if (getDistance() > maxType2Distance && getDistance() != 0) {
+        enteredType2Distance = millis();
+      }
+      if (millis() - enteredType2Distance > type2Delay && magnetReading == HIGH) {
+        setNewState(type2Use);
+      }
     case type2Use:
-      if (readMagnet() == 0) {
+      if (magnetReading == LOW) {
         doorOpenSinceStateChange = true;
       }
       if (doorOpenSinceStateChange //door has been opened
