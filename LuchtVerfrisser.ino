@@ -5,25 +5,25 @@
 //for testing purposes
 #define doorDistance 75
 
-#define cleaningDelay 20000
+#define cleaningDelay 30000
 
 #define notInUseDelay 5000
 
-#define maxType1Distance 70 
-#define type1Delay 3000
+#define maxType1Distance 90 
+#define type1Delay 5000
 
-#define maxType2Distance 30 
-#define type2Delay 5000
+#define maxType2Distance 50 
+#define type2Delay 25000
 
 uint16_t sprayDelay = 3000; // delay in ms
-#define freshenerOnTime 750
+#define freshenerOnTime 1000
 
 #define spraysRemainingAddress  0
 #define emptyEepromValue 65535
 #define startSpraysRemaining 2400
 uint16_t spraysRemaining;
 
-unsigned long triggeredAt;
+unsigned long stateTransitionAt;
 unsigned long sprayInterval;
 uint8_t spraying;
 // number of sprays imminent
@@ -81,6 +81,13 @@ void loop() {
   uint8_t magnetReading = readMagnet();
   getDistance();
 
+  if (getDistance() > maxType1Distance) {
+     enteredType1Distance = millis();
+  }
+  if (getDistance() > maxType2Distance) {
+      enteredType2Distance = millis();
+  }
+      
   switch (state) {
     case notInUse:
       printTemperature();
@@ -89,21 +96,15 @@ void loop() {
       }
       break;
     case useUnknown:
-      if (getDistance() > maxType1Distance && getDistance() != 0) {
-        enteredType1Distance = millis();
-      }
       if (millis() - lastMotionDetected > notInUseDelay && getDistance() > doorDistance) {
         setNewState(notInUse);
       } else if (millis() - enteredType1Distance > type1Delay && magnetReading == HIGH) {
         setNewState(type1Use);
-      } else if (millis() - lastMotionDetected > cleaningDelay && magnetReading == LOW) {
+      } else if (millis() - stateTransitionAt > cleaningDelay && magnetReading == LOW) {
         setNewState(cleaning);
       }
       break;
     case type1Use:
-      if (getDistance() > maxType2Distance && getDistance() != 0) {
-        enteredType2Distance = millis();
-      }
       if (millis() - enteredType2Distance > type2Delay && magnetReading == HIGH) {
         setNewState(type2Use);
       }
@@ -132,7 +133,7 @@ void loop() {
         Serial.println("Done!");
         setNewState(notInUse);
       }
-      else if (millis() - triggeredAt >= sprayDelay) {
+      else if (millis() - stateTransitionAt >= sprayDelay) {
         spray();
       }
       break;
@@ -140,7 +141,6 @@ void loop() {
 }
 
 void trigger(int _nSprays) {
-  triggeredAt = millis();
   nSprays = _nSprays;
   setNewState(triggered);
   doorOpenSinceStateChange = false;
@@ -149,6 +149,7 @@ void trigger(int _nSprays) {
 void setNewState(State newState) {
   state = newState;
   stateChanged = true;
+  stateTransitionAt = millis();
 }
 
 void doStateTransition() {

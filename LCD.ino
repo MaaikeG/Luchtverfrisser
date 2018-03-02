@@ -47,7 +47,7 @@ void printTriggerCountDown() {
 
 void printCountDown() {
   lcd.setCursor(12,0);
-  int timeLeft = (sprayDelay - (millis() - triggeredAt))/1000;
+  int timeLeft = (sprayDelay - (millis() - stateTransitionAt))/1000;
   timeLeft = timeLeft < 0? 0 : timeLeft;
   lcd.print(timeLeft);
 }

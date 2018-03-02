@@ -12,9 +12,10 @@ float temperature;
 #define trigger 16  // Arduino pin tied to triggerger pin on the ultrasonic sensor.
 #define echo 17  // Arduino pin tied to echo pin on the ultrasonic sensor.
 #define maxDistance 200 // Maximum distance we want to ping for (in centimeters). Maximum sensor distance is rated at 400-500cm.
-uint8_t distance;
+float distance;
 unsigned long lastDistanceReading; // clockwatch variable
 NewPing sonar(trigger, echo, maxDistance); // NewPing setup of pins and maximum distance.
+float alpha = 0.25; // learning rate for distance, to ignore outlying values.
 
 // MOTION VARIABLES
 #define motion 18
@@ -50,7 +51,8 @@ int8_t getTemperature() {
 
 uint8_t getDistance() {
   clockWatch(100, &lastDistanceReading, []() {
-    distance = sonar.ping_cm();
+    distance = (1.0 - alpha) * distance + alpha * (float)sonar.ping_cm();
+    Serial.println(distance);
   });
   return distance;
 }
