@@ -15,6 +15,8 @@
 #define maxType2Distance 50 
 #define type2Delay 25000
 
+#define triggeredDelay 1000
+
 uint16_t sprayDelay = 3000; // delay in ms
 #define freshenerOnTime 1000
 
@@ -114,8 +116,8 @@ void loop() {
       }
       if (doorOpenSinceStateChange //door has been opened
           && readMagnet() == HIGH // door is now closed again
-          && millis() - getDoorCloseTime() > 2000 // was closed 2 sec ago
-          && millis() - lastMotionDetected > 2000) { // and no motion detected for 2 sec.
+          && millis() - getDoorCloseTime() > triggeredDelay // was closed 1 sec ago
+          && millis() - lastMotionDetected > triggeredDelay) { // and no motion detected for 1 sec.
         trigger(state == type1Use ? nSpraysUse1 : nSpraysUse2);
       }
       break;
